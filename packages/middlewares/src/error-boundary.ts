@@ -1,4 +1,4 @@
-import { IContext } from '../interfaces/server';
+import { IContext } from '@auf/core';
 
 export function ErrorBoundary(options) {
 

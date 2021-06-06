@@ -9,17 +9,21 @@ export function AuthControl(options) {
     const { assetsRoot } = serverOptions;
     const requestUrl = path.resolve(assetsRoot, url);
 
+    let authorizedPath = false;
     for (let i = 0, len = whitelist.length; i < len; i ++) {
       const whitelistUrl = path.resolve(assetsRoot, whitelist[i]);
 
       if (requestUrl.indexOf(whitelistUrl) === 0) {
-        next(ctx);
-        return;
+        authorizedPath = true;
       }
     }
 
-    ctx.res.statusCode = 403;
-    ctx.body = 'Forbidden Path';
-    return;
+    if (authorizedPath) {
+      await next(ctx);
+    } else {
+      ctx.res.statusCode = 403;
+      ctx.body = 'Forbidden Path';
+      return;
+    }
   }
 }

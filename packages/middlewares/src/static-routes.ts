@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { IContext } from '../interfaces/server';
+import { IContext } from '@auf/core';
 import { Engine } from '@auf/template-engine';
+import { getMD5 } from '@auf/helpers';
 
 export function StaticRoutes(options) {
   return async function StaticRoutesMiddleware(ctx: IContext, next: Function) {
@@ -33,18 +34,12 @@ export function StaticRoutes(options) {
             name: name
           });
         })
-        // ctx.body = Engine.renderWithStream(template, {
-        //   files,
-        //   currentDirectory: global.decodeURIComponent(url!)
-        // }/*, {
-        //   uglify: true
-        // }*/);
-        ctx.body = await Engine.render(template, {
+        ctx.body = Engine.renderWithStream(template, {
           files,
           currentDirectory: global.decodeURIComponent(url!)
-        }, {
+        }/*, {
           uglify: true
-        });
+        }*/);
         ctx.res.statusCode = 200;
         await next(ctx);
         return;
@@ -54,19 +49,20 @@ export function StaticRoutes(options) {
         throw new Error();
       }
     } catch (e) {
+      await next(ctx);
+      if (ctx.extendInfo.handled) {
+        return;
+      }
       ctx.body = 'Not Found'
       ctx.res.statusCode = 404;
-      await next(ctx);
       return;
     }
     
-    try {
-      ctx.body = fs.createReadStream(resourcePath);
-    } catch (e) {
-      ctx.body = JSON.stringify(e);
-      ctx.res.statusCode = 404;
-    } finally {
-      await next(ctx);
-    }
+    const { res } = ctx;
+    const etag = await getMD5(resourcePath);
+    res.setHeader('Etag', etag);
+    ctx.extendInfo.etag = etag;
+    ctx.body = fs.createReadStream(resourcePath);
+    await next(ctx);
   }
 }
