@@ -1,0 +1,11 @@
+{
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  },
+  "scripts": {
+    "dev:setup-server": "node index.js",
+    "dev:compile": "lerna run --parallel dev"
+  }
+}

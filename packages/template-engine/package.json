@@ -1,0 +1,16 @@
+{
+  "name": "@auf/template-engine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^15.6.2",
+    "typescript": "^4.3.2"
+  }
+}
