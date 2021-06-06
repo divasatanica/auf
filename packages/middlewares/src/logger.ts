@@ -1,5 +1,5 @@
-import { IContext } from '../interfaces/server';
-import { uuid } from '../utils/tools'
+import { IContext } from '@auf/core';
+import { uuid } from '@auf/helpers';
 
 const sign = '[static-server]';
 const outSign ='<<<';

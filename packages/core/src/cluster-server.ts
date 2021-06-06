@@ -1,7 +1,10 @@
 import * as cluster from 'cluster';
 import { cpus } from 'os';
-import { IClusterServerOptions } from './interfaces/server';
-import { Server } from './server';
+import { Server, IServerOptions } from './server';
+
+export interface IClusterServerOptions extends IServerOptions {
+  workerNum?: number;
+}
 
 class ClusterServer extends Server {
   private clusterOptions: IClusterServerOptions

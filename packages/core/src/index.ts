@@ -1,9 +1,12 @@
-import { Server } from './server';
-import { ClusterServer } from './cluster-server';
-import * as Middlewares from './middlewares/index'
+import { Server, IContext, IServerOptions } from './server';
+import { ClusterServer, IClusterServerOptions } from './cluster-server';
 
 export {
   Server,
-  Middlewares,
-  ClusterServer
+  ClusterServer,
+
+  // declarations
+  IContext,
+  IServerOptions,
+  IClusterServerOptions,
 }

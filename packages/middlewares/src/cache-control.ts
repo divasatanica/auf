@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { IContext } from '../interfaces/server';
-import { checkMimeTypes } from '../utils/mime-type';
+import { checkMimeTypes } from '@auf/helpers';
 
 const DefaultMaxAges = {
   'text/html': 60,

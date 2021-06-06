@@ -1,5 +1,9 @@
-import { compose } from './utils/functional';
-import { IContext } from './interfaces/server';
+import { compose } from '@auf/helpers';
+import { IContext } from './server';
+
+export interface IMiddleWare {
+  (ctx: IContext, next?: IMiddleWare): any;
+}
 
 export class Middlewares {
   public middlewares: Function[];

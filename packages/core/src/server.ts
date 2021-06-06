@@ -1,6 +1,20 @@
 import * as http from 'http';
-import { IServerOptions, IMiddleWare, IContext } from './interfaces/server';
-import { Middlewares } from './middleware-manager';
+import { Middlewares, IMiddleWare } from './middleware-manager';
+
+export interface IServerOptions {
+  port: number;
+  assetsRoot: string;
+  timeout?: number;
+  listeningCallback?: () => void;
+  errorHandler?: (e: Error) => void;
+}
+
+export interface IContext {
+  req: http.IncomingMessage;
+  res: http.ServerResponse;
+  serverOptions: IServerOptions;
+  body?: any;
+}
 
 class Server {
   public options: IServerOptions;

@@ -7,16 +7,14 @@
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": "./packages",
-    "paths": {
-      "@auf/*": ["/*/dist"]
-    },
+    "baseUrl": ".",
     "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "./dist/types"
+    "declarationDir": "./dist/types",
+    "rootDir": "src"
   },
   "include": [
-    "packages/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules", // 这个目录下的代码不会被 typescript 处理

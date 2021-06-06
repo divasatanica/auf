@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { Server: StaticServer, Middlewares } = require('./packages/core/dist/index');
+const { Server: StaticServer, Middlewares } = require('./packages/auf/dist/index');
 
 const port = 5000
 const timeout = 3000
