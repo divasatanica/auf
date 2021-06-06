@@ -1,6 +1,6 @@
 {
   "name": "@vergiss/auf-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "> TODO: description",
   "author": "",
   "homepage": "https://github.com/divasatanica/auf#readme",
@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/node": "^15.6.2",
-    "@vergiss/auf-helpers": "^0.1.0",
+    "@vergiss/auf-helpers": "^0.1.1",
     "typescript": "^4.3.2"
   }
 }
