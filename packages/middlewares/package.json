@@ -1,6 +1,6 @@
 {
-  "name": "@auf/middlewares",
-  "version": "1.0.0",
+  "name": "@vergiss/auf-middlewares",
+  "version": "0.1.0",
   "description": "> TODO: description",
   "author": "zenglingji <zenglingji@joyy.sg>",
   "homepage": "https://github.com/divasatanica/auf#readme",
@@ -12,7 +12,7 @@
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -23,7 +23,8 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "build": "rimraf ./dist && tsc && mkdir -p ./dist/static && cp ./static/template.html ./dist/static/template.html"
   },
   "bugs": {
     "url": "https://github.com/divasatanica/auf/issues"
@@ -32,9 +33,8 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@auf/core": "^1.0.0",
-    "@auf/helpers": "^1.0.0",
-    "@auf/template-engine": "^1.0.0",
-    "typescript": "^4.3.2"
+    "@vergiss/auf-core": "^0.1.0",
+    "@vergiss/auf-helpers": "^0.1.0",
+    "@vergiss/auf-template-engine": "^0.1.0"
   }
 }

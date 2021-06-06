@@ -4,9 +4,9 @@ import {
 
   IServerOptions,
   IClusterServerOptions
-} from '@auf/core';
+} from '@vergiss/auf-core';
 
-import * as Middlewares from '@auf/middlewares';
+import * as Middlewares from '@vergiss/auf-middlewares';
 
 export {
   Server,

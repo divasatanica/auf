@@ -1,17 +1,17 @@
 {
-  "name": "auf",
-  "version": "1.0.0",
+  "name": "@vergiss/auf",
+  "version": "0.1.0",
   "description": "> TODO: description",
   "author": "zenglingji <zenglingji@joyy.sg>",
   "homepage": "https://github.com/divasatanica/auf#readme",
   "license": "ISC",
   "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
   },
   "files": [
-    "lib",
     "dist"
   ],
   "repository": {
@@ -26,8 +26,8 @@
     "url": "https://github.com/divasatanica/auf/issues"
   },
   "dependencies": {
-    "@auf/core": "^1.0.0",
-    "@auf/middlewares": "^1.0.0"
+    "@vergiss/auf-core": "^0.1.0",
+    "@vergiss/auf-middlewares": "^0.1.0"
   },
   "devDependencies": {
     "typescript": "^4.3.2"

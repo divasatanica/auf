@@ -1,5 +1,5 @@
-import { IContext } from '@auf/core';
-import { uuid } from '@auf/helpers';
+import { IContext } from '@vergiss/auf-core';
+import { uuid } from '@vergiss/auf-helpers';
 
 const sign = '[static-server]';
 const outSign ='<<<';

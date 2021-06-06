@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { Server: StaticServer, Middlewares } = require('./packages/auf/dist/index');
+const { Server: StaticServer, Middlewares } = require('../packages/auf/dist/index');
 
 const port = 5000
 const timeout = 3000
@@ -28,7 +28,7 @@ server.applyMiddleware([
   }),
   Middlewares.CacheControl(),
   Middlewares.StaticRoutes({
-    template: fs.readFileSync(path.resolve(__dirname, './static/template.html')).toString('utf-8')
+    // template: fs.readFileSync(path.resolve(__dirname, './static/template.html')).toString('utf-8')
   })
 ])
 

@@ -1,4 +1,4 @@
-import { IContext } from '@auf/core';
+import { IContext } from '@vergiss/auf-core';
 
 export function ErrorBoundary(options) {
 

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { IContext } from '@auf/core';
+import { IContext } from '@vergiss/auf-core';
 
 export function AuthControl(options) {
   return async function AuthControlMiddleware(ctx: IContext, next: Function) {

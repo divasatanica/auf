@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { IContext } from '@auf/core';
-import { checkMimeTypes, LRUCache } from '@auf/helpers';
+import { IContext } from '@vergiss/auf-core';
+import { checkMimeTypes, LRUCache } from '@vergiss/auf-helpers';
 
 const DefaultMaxAges = {
   'text/html': 60,

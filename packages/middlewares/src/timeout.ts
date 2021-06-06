@@ -1,4 +1,4 @@
-import { IContext } from '@auf/core';
+import { IContext } from '@vergiss/auf-core';
 
 export function Timeout(config = { timeout: 3000 }) {
   return async function TimeoutMiddleware(ctx: IContext, next: Function) {

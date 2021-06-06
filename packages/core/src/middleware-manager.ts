@@ -1,4 +1,4 @@
-import { compose } from '@auf/helpers';
+import { compose } from '@vergiss/auf-helpers';
 import { IContext } from './server';
 
 export interface IMiddleWare {
