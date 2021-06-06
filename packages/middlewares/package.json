@@ -36,5 +36,6 @@
     "@vergiss/auf-core": "^0.1.1",
     "@vergiss/auf-helpers": "^0.1.1",
     "@vergiss/auf-template-engine": "^0.1.1"
-  }
+  },
+  "gitHead": "09110f5b29a9ef377413c44e343f4a4e562ff003"
 }
