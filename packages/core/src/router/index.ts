@@ -1,7 +1,18 @@
 import { IContext } from '../server';
+import { RouterMap, dispatchToRouteHandler } from './router-core';
 
-export function Router() {
-  // TODO
+// enum IHttpMethods {
+//   GET = 'GET',
+//   POST = 'POST',
+//   PUT = 'PUT',
+//   DELETE = 'DELETE',
+//   OPTIONS = 'OPTIONS',
+//   PATCH = 'PATCH'
+// }
+
+const routerMap = new RouterMap();
+
+function Router() {
   return async function RouterMiddleware(ctx: IContext, next: Function) {
     if (ctx.extendInfo) {
       if (ctx.extendInfo.handled) {
@@ -10,8 +21,14 @@ export function Router() {
       }
     }
 
+    const { method } = ctx.req;
+    const { handler, ctx: wrappedCtx } = dispatchToRouteHandler(ctx, routerMap.getFromMap(method!)!);
 
-    ctx.body = 'hello world';
-    ctx.res.statusCode = 200;
+    await handler(wrappedCtx, next);
   }
+}
+
+export {
+  routerMap,
+  Router
 }

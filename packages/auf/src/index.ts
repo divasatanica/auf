@@ -1,6 +1,8 @@
 import {
   Server,
   ClusterServer,
+  Router,
+  routerMap,
 
   IServerOptions,
   IClusterServerOptions
@@ -12,6 +14,8 @@ export {
   Server,
   ClusterServer,
   Middlewares,
+  Router,
+  routerMap,
 
   // declarations
   IServerOptions,

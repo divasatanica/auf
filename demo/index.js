@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { Server: StaticServer, Middlewares } = require('../packages/auf/dist/index');
+const { Server: StaticServer, Middlewares, Router, routerMap } = require('../packages/auf/dist/index');
 
 const port = 5000
 const timeout = 3000
@@ -13,9 +13,19 @@ const errorHandler = e => {
 
 const server = new StaticServer({
   port,
-  assetsRoot: path.resolve(__dirname, './public'),
+  assetsRoot: path.resolve(__dirname, '../public'),
   workerNum: 8,
 });
+
+routerMap.get('/act/hello', async (ctx, next) => {
+  ctx.body = 'yes!!!!!';
+  await next(ctx);
+});
+
+routerMap.get('/act/:id/:moduleId', async (ctx, next) => {
+  ctx.body = 'yes!!!!!' + ctx.params.id + '--' + ctx.params.moduleId;
+  await next(ctx);
+})
 
 server.applyMiddleware([
   Middlewares.ErrorBoundary({ errorHandler }),
@@ -29,7 +39,8 @@ server.applyMiddleware([
   Middlewares.CacheControl(),
   Middlewares.StaticRoutes({
     // template: fs.readFileSync(path.resolve(__dirname, './static/template.html')).toString('utf-8')
-  })
+  }),
+  Router()
 ])
 
 try {
