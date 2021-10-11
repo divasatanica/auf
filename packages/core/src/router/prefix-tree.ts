@@ -25,16 +25,26 @@ class RouterTreeLeafNode {
   }
 }
 
+/**
+ *  We use text-prefix tree to store the routes map. Cause when using plain text or template text
+ *  to define a route, it might be many routes with the same namespace(prefix), using text-prefix tree
+ *  can make a convenient access to match the route and get the handler. 
+ */
+
 class NTree implements IRouterTree {
   private root = new NTreeNode('');
 
   addToTree(urlPattern: string, handler: any) {
     let p = this.root;
+    // Padding an element to the rear of the array to make the leaf node.
     const urlPatternComponents = [...urlPattern.split('/').filter(Boolean), LEAF_SIGN];
 
     urlPatternComponents.forEach(component => {
       const { children } = p;
 
+      // If quickMap has this component, it means the route has the same namespace
+      // with existed route, so get to the next level directly. If the node is a leaf
+      // node, just return cause it means redundant route is adding to the tree, we dont need it.
       if (p.quickMap.has(component)) {
         const node = p.quickMap.get(component)!;
         if (isLeafNode(node)) {
@@ -53,6 +63,8 @@ class NTree implements IRouterTree {
       const newNode = new NTreeNode(component);
       children.push(newNode);
       p.quickMap.set(component, newNode);
+      // When the expression like ':id' shows in the route, it should
+      // treat it as a parameter node.One tree node can only have one parameter node.
       if (component.indexOf(':') > -1) {
         p.paramNode = newNode;
       }
@@ -70,6 +82,8 @@ class NTree implements IRouterTree {
     while (p) {
       const component = urlComponents[i ++];
 
+      // If the quickMap has the component, return it if it's also a leaf node.
+      // Or just move to the next level and store the path.
       if (p.quickMap.has(component)) {
         const node = p.quickMap.get(component)!;
         if (isLeafNode(node)) {
@@ -81,6 +95,7 @@ class NTree implements IRouterTree {
         continue;
       }
       if (component) {
+        // If no parameter node found, treat it as an undefined route.
         if (!p.paramNode) {
           throw new Error('Route not defined')
         }

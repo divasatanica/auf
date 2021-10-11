@@ -51,7 +51,13 @@ class RouterMap {
   }
 }
 
-
+/**
+ * Add params/body/query data to the context object.
+ * @param ctx Context object
+ * @param url Request URL
+ * @param urlPattern Matched URL pattern
+ * @returns Wrapped context object with params
+ */
 async function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
   ctx.extendInfo = ctx.extendInfo || {};
   const [urlWithParams, queryString = ''] = url.split('?');
