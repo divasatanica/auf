@@ -52,21 +52,52 @@ class RouterMap {
 }
 
 
-function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
+async function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
   ctx.extendInfo = ctx.extendInfo || {};
   const [urlWithParams, queryString = ''] = url.split('?');
   let params = Object.create(null);
   const query = queryString.split('&').reduce((acc, curr) => {
+    if (!curr) {
+      return acc;
+    }
     const [key, value] = curr.split('=');
     return {
       ...acc,
       [key]: value
     }
-  }, {});
+  }, Object.create(null));
   const urlComponents = urlWithParams.split('/');
   const urlPatternComponents = urlPattern.split('/');
 
+  let data = '';
+  ctx.req.on('data', chunk => {
+    data += chunk;
+  });
+
+  const readReq = new Promise<void>((resolve, reject) => {
+    ctx.req.on('end', () => {
+      const body = data.split('&').reduce((acc, curr) => {
+        if (!curr) {
+          return acc;
+        }
+        const [key, value] = curr.split('=');
+        return {
+          ...acc,
+          [key]: value
+        }
+      }, Object.create(null));
+      resolve(body);
+    });
+
+    ctx.req.on('error', err => {
+      reject(err);
+    });
+  })
+
+  const parsedBody = await readReq;
+
   ctx.extendInfo.query = query;
+  ctx.extendInfo.body = parsedBody;
 
   for (let i = 0, len = urlPatternComponents.length; i < len; i ++) {
     const urlPatternComponent = urlPatternComponents[i];
@@ -96,11 +127,11 @@ function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
   return ctx;
 }
 
-function dispatchToRouteHandler(ctx: IContext, routerTree: IRouterTree) {
+async function dispatchToRouteHandler(ctx: IContext, routerTree: IRouterTree) {
   const { url } = ctx.req;
   const { handler, path } = routerTree.getHandlerFromTree(url!);
 
-  const wrappedCtx = wrapCtx(ctx, url!, path);
+  const wrappedCtx = await wrapCtx(ctx, url!, path);
 
   return {
     ctx: wrappedCtx,

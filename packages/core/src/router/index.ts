@@ -22,7 +22,7 @@ function Router() {
     }
 
     const { method } = ctx.req;
-    const { handler, ctx: wrappedCtx } = dispatchToRouteHandler(ctx, routerMap.getFromMap(method!)!);
+    const { handler, ctx: wrappedCtx } = await dispatchToRouteHandler(ctx, routerMap.getFromMap(method!)!);
 
     await handler(wrappedCtx, next);
   }

@@ -23,7 +23,12 @@ routerMap.get('/act/hello', async (ctx, next) => {
 });
 
 routerMap.get('/act/:id/:moduleId', async (ctx, next) => {
-  ctx.body = 'yes!!!!!' + ctx.params.id + '--' + ctx.params.moduleId;
+  ctx.body = 'yes!!!!!' + ctx.params.id + '--' + ctx.params.moduleId + ' pageId:' + ctx.query.pageId;
+  await next(ctx);
+})
+
+routerMap.post('/dd', async (ctx, next) => {
+  ctx.body = 'Hello world -- ' + ctx.extendInfo.body.a
   await next(ctx);
 })
 
