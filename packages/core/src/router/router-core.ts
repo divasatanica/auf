@@ -83,7 +83,7 @@ async function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
         const [key, value] = curr.split('=');
         return {
           ...acc,
-          [key]: value
+          [decodeURIComponent(key)]: decodeURIComponent(value)
         }
       }, Object.create(null));
       resolve(body);
@@ -121,6 +121,12 @@ async function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
   Object.defineProperty(ctx, 'query', {
     get() {
       return ctx.extendInfo.query;
+    }
+  });
+
+  Object.defineProperty(ctx, 'reqBody', {
+    get() {
+      return ctx.extendInfo.body;
     }
   });
 
