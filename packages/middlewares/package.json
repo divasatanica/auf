@@ -1,6 +1,6 @@
 {
   "name": "@vergiss/auf-middlewares",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "> TODO: description",
   "author": "zenglingji <zenglingji@joyy.sg>",
   "homepage": "https://github.com/divasatanica/auf#readme",
@@ -33,9 +33,9 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vergiss/auf-core": "^0.2.0",
-    "@vergiss/auf-helpers": "^0.2.0",
-    "@vergiss/auf-template-engine": "^0.2.0"
+    "@vergiss/auf-core": "^0.2.1",
+    "@vergiss/auf-helpers": "^0.2.1",
+    "@vergiss/auf-template-engine": "^0.2.1"
   },
   "gitHead": "09110f5b29a9ef377413c44e343f4a4e562ff003"
 }
