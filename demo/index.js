@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { Server: StaticServer, Middlewares, Router, routerMap } = require('../packages/auf/dist/index');
+const { Server: StaticServer, Middlewares, Router, RouterMapFactory } = require('../packages/auf/dist/index');
 
 const port = 5000
 const timeout = 3000
@@ -16,6 +16,8 @@ const server = new StaticServer({
   assetsRoot: path.resolve(__dirname, '../public'),
   workerNum: 8,
 });
+
+const routerMap = RouterMapFactory();
 
 routerMap.get('/act/hello', async (ctx, next) => {
   ctx.body = 'yes!!!!!';

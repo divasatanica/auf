@@ -2,7 +2,7 @@ import {
   Server,
   ClusterServer,
   Router,
-  routerMap,
+  RouterMapFactory,
 
   IServerOptions,
   IClusterServerOptions
@@ -15,7 +15,7 @@ export {
   ClusterServer,
   Middlewares,
   Router,
-  routerMap,
+  RouterMapFactory,
 
   // declarations
   IServerOptions,

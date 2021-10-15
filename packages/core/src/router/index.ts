@@ -10,7 +10,16 @@ import { RouterMap, dispatchToRouteHandler } from './router-core';
 //   PATCH = 'PATCH'
 // }
 
-const routerMap = new RouterMap();
+let routerMap: RouterMap;
+
+function RouterMapFactory () {
+  if (routerMap) {
+    return routerMap;
+  }
+
+  routerMap = new RouterMap();
+  return routerMap;
+}
 
 function Router() {
   return async function RouterMiddleware(ctx: IContext, next: Function) {
@@ -29,6 +38,6 @@ function Router() {
 }
 
 export {
-  routerMap,
+  RouterMapFactory,
   Router
 }
