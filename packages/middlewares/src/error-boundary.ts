@@ -9,7 +9,8 @@ export function ErrorBoundary(options) {
       await next(ctx);
     } catch (e) {
       ctx.body = `Error: ${e.message}`;
-      ctx.res.statusCode = 500;
+      ctx.res.statusCode = e.statusCode || 500;
+      ctx.res.statusMessage = e.statusMessage || 'Internal Error';
       errorHandler(e);
 
     }

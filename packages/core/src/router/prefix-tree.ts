@@ -1,13 +1,18 @@
 const NOT_LEAF_SIGN = '__not_leaf__';
 const LEAF_SIGN = '__leaf__';
+const REG_EXP_NODE_SIGN = '__regexp_leaf__';
 
 function isLeafNode (node: any): node is RouterTreeLeafNode {
   return node.type === LEAF_SIGN;
 }
 
+function isRegExpNode (node: any): node is RouterRegExpLeafNode {
+  return node.type === REG_EXP_NODE_SIGN;
+}
+
 class NTreeNode {
   public value: string;
-  public children: Array<NTreeNode | RouterTreeLeafNode>;
+  public children: Array<NTreeNode | RouterTreeLeafNode | RouterRegExpLeafNode>;
   public quickMap: Map<string, NTreeNode | RouterTreeLeafNode> = new Map();
   public type: string = NOT_LEAF_SIGN;
   public paramNode: NTreeNode;
@@ -21,6 +26,16 @@ class RouterTreeLeafNode {
   public value: Function;
   public type: string = LEAF_SIGN;
   constructor (value: Function) {
+    this.value = value;
+  }
+}
+
+class RouterRegExpLeafNode {
+  public value: Function;
+  public exp: RegExp;
+  public type: string = REG_EXP_NODE_SIGN;
+  constructor (exp: RegExp, value: Function) {
+    this.exp = exp;
     this.value = value;
   }
 }
@@ -72,6 +87,30 @@ class NTree implements IRouterTree {
     });
   }
 
+  addRegExpToTree(urlPattern: RegExp, handler: Function) {
+    const root = this.root;
+
+    root.children.push(new RouterRegExpLeafNode(urlPattern, handler));
+  }
+
+  getHandlerFromRegExpNode(url: string): any {
+    const regExpNode = this.root.children.filter(isRegExpNode).filter(node => node.exp.test(url));
+
+    if (regExpNode.length === 0) {
+      const err = { message: 'Route not defined', statusCode: 404, statusMessage: 'Not found' };
+      throw err;
+    }
+
+    // Take the first mathed regular expression as the result,
+    // No considering the case for multi regexp matched.
+    const node = regExpNode[0];
+
+    return {
+      handler: node.value,
+      matched: node.exp
+    };
+  }
+
   getHandlerFromTree(url: string): any{
     const [urlWithParams, _] = url.split('?');
     const urlComponents = urlWithParams.split('/').filter(Boolean);
@@ -95,9 +134,12 @@ class NTree implements IRouterTree {
         continue;
       }
       if (component) {
-        // If no parameter node found, treat it as an undefined route.
+        // If no parameter node found, try regular expression matching.
         if (!p.paramNode) {
-          throw new Error('Route not defined')
+          const { handler, matched } = this.getHandlerFromRegExpNode(url);
+          res = handler
+          path = matched;
+          break;
         }
         path += '/' + p.paramNode.value;
         p = p.paramNode;
@@ -123,6 +165,7 @@ class NTree implements IRouterTree {
 
 export interface IRouterTree {
   addToTree(urlPattern: string, handler: any): void;
+  addRegExpToTree(urlPattern: RegExp, handler: any): void;
   getRoot(): NTreeNode;
   getHandlerFromTree(url: string): any;
 }

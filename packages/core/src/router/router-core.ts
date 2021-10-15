@@ -12,14 +12,18 @@ class RouterMap {
     });
   }
 
-  register(method: string, urlPattern: string, handler: Function) {
+  register(method: string, urlPattern: string | RegExp, handler: Function) {
     const methodRouterTree = this.routerMap.get(method);
 
     if (!methodRouterTree) {
       return;
     }
 
-    methodRouterTree.addToTree(urlPattern, handler);
+    if (typeof urlPattern === 'string') {
+      methodRouterTree.addToTree(urlPattern, handler);
+    } else {
+      methodRouterTree.addRegExpToTree(urlPattern, handler);
+    }
   }
 
   getFromMap(method: string) {
@@ -58,10 +62,41 @@ class RouterMap {
  * @param urlPattern Matched URL pattern
  * @returns Wrapped context object with params
  */
-async function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
+async function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp) {
   ctx.extendInfo = ctx.extendInfo || {};
-  const [urlWithParams, queryString = ''] = url.split('?');
+  await wrapCtxWithQueryOrBody(ctx, url);
+  const [urlWithParams] = url.split('?');
   let params = Object.create(null);
+
+  if (typeof urlPattern !== 'string') {
+    const result = url.match(urlPattern);
+
+    if (result != null) {
+      const [_, ...matched] = result;
+
+      params = matched;
+    }
+  } else {
+    const urlComponents = urlWithParams.split('/');
+    const urlPatternComponents = urlPattern.split('/');
+    for (let i = 0, len = urlPatternComponents.length; i < len; i ++) {
+      const urlPatternComponent = urlPatternComponents[i];
+      const urlComponent = urlComponents[i];
+  
+      if (urlPatternComponent.indexOf(':') < 0) {
+        continue;
+      }
+  
+      params[urlPatternComponent.replace(':', '')] = urlComponent;
+    }
+  }
+
+  ctx.extendInfo.params = params;
+  return ctx;
+}
+
+async function wrapCtxWithQueryOrBody(ctx: IContext, url: string) {
+  const [_, queryString = ''] = url.split('?');
   const query = queryString.split('&').reduce((acc, curr) => {
     if (!curr) {
       return acc;
@@ -72,8 +107,6 @@ async function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
       [key]: value
     }
   }, Object.create(null));
-  const urlComponents = urlWithParams.split('/');
-  const urlPatternComponents = urlPattern.split('/');
 
   let data = '';
   ctx.req.on('data', chunk => {
@@ -104,39 +137,6 @@ async function wrapCtx (ctx: IContext, url: string, urlPattern: string) {
 
   ctx.extendInfo.query = query;
   ctx.extendInfo.body = parsedBody;
-
-  for (let i = 0, len = urlPatternComponents.length; i < len; i ++) {
-    const urlPatternComponent = urlPatternComponents[i];
-    const urlComponent = urlComponents[i];
-
-    if (urlPatternComponent.indexOf(':') < 0) {
-      continue;
-    }
-
-    params[urlPatternComponent.replace(':', '')] = urlComponent;
-  }
-
-  ctx.extendInfo.params = params;
-
-  Object.defineProperty(ctx, 'params', {
-    get() {
-      return ctx.extendInfo.params;
-    }
-  });
-
-  Object.defineProperty(ctx, 'query', {
-    get() {
-      return ctx.extendInfo.query;
-    }
-  });
-
-  Object.defineProperty(ctx, 'reqBody', {
-    get() {
-      return ctx.extendInfo.body;
-    }
-  });
-
-  return ctx;
 }
 
 async function dispatchToRouteHandler(ctx: IContext, routerTree: IRouterTree) {

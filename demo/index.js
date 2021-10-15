@@ -27,10 +27,15 @@ routerMap.get('/act/:id/:moduleId', async (ctx, next) => {
   await next(ctx);
 })
 
-routerMap.post('/dd', async (ctx, next) => {
-  ctx.body = 'Hello world -- ' + ctx.extendInfo.body.a
+routerMap.post('/test', async (ctx, next) => {
+  ctx.body = 'Hello world -- ' + ctx.reqBody.a + ' A=' + ctx.query.a;
   await next(ctx);
-})
+});
+
+routerMap.get(/aabb\/(\w+)\/(\d+)/, async (ctx, next) => {
+  ctx.body = 'Hello world -- ' + ctx.params[0] + ' id= ' + ctx.params[1];
+  await next(ctx);
+});
 
 server.applyMiddleware([
   Middlewares.ErrorBoundary({ errorHandler }),

@@ -12,6 +12,10 @@ const CacheControlHeaderName = 'Cache-Control';
 
 export function CacheControl(config = DefaultMaxAges) {
   return async function CacheControlMiddleware(ctx: IContext, next: Function) {
+    const finalConfig = {
+      ...DefaultMaxAges,
+      ...config
+    };
     const lruCache = new LRUCache(100);
     const countLruCache = new LRUCache(100);
     const { res, req } = ctx;
@@ -37,7 +41,7 @@ export function CacheControl(config = DefaultMaxAges) {
       return;
     }
 
-    const cacheControlHeader = config[mimeTypes];
+    const cacheControlHeader = finalConfig[mimeTypes];
 
     if (typeof cacheControlHeader === 'number') {
       res.setHeader(CacheControlHeaderName, `max-age=${cacheControlHeader}`);
