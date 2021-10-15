@@ -1,6 +1,6 @@
 # `@vergiss/auf`
 
-This is a simple http framework implemented with Typescript and Node.js raw API.
+This is a simple http framework written in Typescript with Node.js raw API.
 
 ## Feature
 
