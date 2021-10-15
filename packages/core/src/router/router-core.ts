@@ -75,6 +75,8 @@ async function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp)
       const [_, ...matched] = result;
 
       params = matched;
+    } else {
+      params = [];
     }
   } else {
     const urlComponents = urlWithParams.split('/');
