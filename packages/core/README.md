@@ -73,7 +73,7 @@ try {
 
 For more scalability, the framework itself only provide a container for middelwares and drive the context to flow through them, which makes middlewares able to modify the context or make some operation. So you can see the basic functionalities are also implemented as a middleware. It is called Onion Style Middleware, which can provide more convenient access to the context.
 
-For the options details, you can see [Docs of built-in middlewares](!https://github.com/divasatanica/auf/blob/main/packages/middlewares/README.md).
+For the options details, you can see [Docs of built-in middlewares](https://github.com/divasatanica/auf/blob/main/packages/middlewares/README.md).
 
 
 
