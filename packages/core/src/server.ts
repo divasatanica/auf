@@ -40,6 +40,18 @@ class Context {
     this.extendInfo.handled = true;
     this._body = value;
   }
+
+  get reqBody() {
+    return this.extendInfo.body;
+  }
+
+  get query() {
+    return this.extendInfo.query;
+  }
+
+  get params() {
+    return this.extendInfo.params;
+  }
 }
 
 class Server {
