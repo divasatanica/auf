@@ -1,6 +1,6 @@
 import { IContext } from '@vergiss/auf-core';
 
-export function Timeout(config = { timeout: 3000 }) {
+export function Timeout(config = { timeout: 15000 }) {
   return async function TimeoutMiddleware(ctx: IContext, next: Function) {
     const timeout = new Promise(r => {
       setTimeout(() => r({ hasTimeout: true }), config.timeout);
