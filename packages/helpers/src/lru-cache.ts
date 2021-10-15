@@ -2,7 +2,7 @@
  * @param {number} capacity
  */
  class LRUCache {
-  public map: Map<number, any>;
+  public map: Map<string, any>;
   public list: DoubleLinkedList;
   public capacity: number;
   constructor(capacity: number) {
@@ -11,11 +11,7 @@
     this.capacity = capacity;
   }
 
-  /** 
-  * @param {number} key
-  * @return {number}
-  */
-  get(key: number): number {
+  get(key: string): any {
     if (!this.map.has(key)) {
       return -1;
     }
@@ -28,12 +24,7 @@
     return node.val;
   }
 
-  /** 
-  * @param {number} key 
-  * @param {number} value
-  * @return {void}
-  */
-  put(key: number, value: number): void {
+  put(key: string, value: any): void {
     if (!this.map.has(key)) {
       const node = this.list.push(key, value);
       this.map.set(key, node);
@@ -64,7 +55,7 @@ class DoubleLinkedListNode {
   public next: DoubleLinkedListNode | null;
   public val: any;
   public key: any;
-  constructor (val?: any, key: number | null = null) {
+  constructor (val?: any, key: any | null = null) {
     this.pre = null;
     this.next = null;
     this.val = val;
@@ -84,7 +75,7 @@ class DoubleLinkedList {
     this.count = 0;
   }
 
-  push(key: number, val: number) {
+  push(key: string, val: any) {
     const node = new DoubleLinkedListNode(val, key);
     const last = this.tail.pre!;
     last.next = node;
