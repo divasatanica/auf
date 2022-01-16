@@ -13,7 +13,7 @@ function isRegExpNode (node: any): node is RouterRegExpLeafNode {
 class NTreeNode {
   public value: string;
   public children: Array<NTreeNode | RouterTreeLeafNode | RouterRegExpLeafNode>;
-  public quickMap: Map<string, NTreeNode | RouterTreeLeafNode> = new Map();
+  public quickMap: Map<string|Symbol, NTreeNode | RouterTreeLeafNode> = new Map();
   public type: Symbol = NOT_LEAF_SIGN;
   public paramNode: NTreeNode;
   constructor (value: string) {
@@ -55,7 +55,7 @@ class NTree implements IRouterTree {
     const urlPatternComponents = [...urlPattern.split('/').filter(Boolean), LEAF_SIGN];
 
     urlPatternComponents.forEach(component => {
-      const { children } = p;
+      const { quickMap } = p;
 
       // If quickMap has this component, it means the route has the same namespace
       // with existed route, so get to the next level directly. If the node is a leaf
@@ -71,15 +71,14 @@ class NTree implements IRouterTree {
 
       if (component === LEAF_SIGN) {
         const newNode = new RouterTreeLeafNode(handler);
-        children.push(newNode);
+        quickMap.set(LEAF_SIGN, newNode);
         return;
       }
 
       const newNode = new NTreeNode(component as string);
-      children.push(newNode);
       p.quickMap.set(component as string, newNode);
       // When the expression like ':id' shows in the route, it should
-      // treat it as a parameter node.One tree node can only have one parameter node.
+      // be treated as a parameter node.One tree node can only have one parameter node.
       if ((component as string).indexOf(':') > -1) {
         p.paramNode = newNode;
       }
@@ -146,7 +145,12 @@ class NTree implements IRouterTree {
         continue;
       }
 
-      const leafNode = p.children.filter(isLeafNode)[0];
+      const leafNode = p.quickMap.get(LEAF_SIGN);
+
+      if (leafNode == null) {
+        const err = { message: 'Handler not defined', statusCode: 500, statusMessage: 'Not found' };
+        throw err;
+      }
 
       res = leafNode.value;
       break;
