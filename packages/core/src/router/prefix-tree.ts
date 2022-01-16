@@ -1,6 +1,6 @@
-const NOT_LEAF_SIGN = '__not_leaf__';
-const LEAF_SIGN = '__leaf__';
-const REG_EXP_NODE_SIGN = '__regexp_leaf__';
+const NOT_LEAF_SIGN = Symbol('__not_leaf__');
+const LEAF_SIGN = Symbol('__leaf__');
+const REG_EXP_NODE_SIGN = Symbol('__regexp_leaf__');
 
 function isLeafNode (node: any): node is RouterTreeLeafNode {
   return node.type === LEAF_SIGN;
@@ -14,7 +14,7 @@ class NTreeNode {
   public value: string;
   public children: Array<NTreeNode | RouterTreeLeafNode | RouterRegExpLeafNode>;
   public quickMap: Map<string, NTreeNode | RouterTreeLeafNode> = new Map();
-  public type: string = NOT_LEAF_SIGN;
+  public type: Symbol = NOT_LEAF_SIGN;
   public paramNode: NTreeNode;
   constructor (value: string) {
     this.value = value;
@@ -22,19 +22,19 @@ class NTreeNode {
   }
 }
 
-class RouterTreeLeafNode {
-  public value: Function;
-  public type: string = LEAF_SIGN;
-  constructor (value: Function) {
+class RouterTreeLeafNode<T = Function> {
+  public value: T;
+  public type: Symbol = LEAF_SIGN;
+  constructor (value: T) {
     this.value = value;
   }
 }
 
-class RouterRegExpLeafNode {
-  public value: Function;
+class RouterRegExpLeafNode<T = Function> {
+  public value: T;
   public exp: RegExp;
-  public type: string = REG_EXP_NODE_SIGN;
-  constructor (exp: RegExp, value: Function) {
+  public type: Symbol = REG_EXP_NODE_SIGN;
+  constructor (exp: RegExp, value: T) {
     this.exp = exp;
     this.value = value;
   }
@@ -60,8 +60,8 @@ class NTree implements IRouterTree {
       // If quickMap has this component, it means the route has the same namespace
       // with existed route, so get to the next level directly. If the node is a leaf
       // node, just return cause it means redundant route is adding to the tree, we dont need it.
-      if (p.quickMap.has(component)) {
-        const node = p.quickMap.get(component)!;
+      if (p.quickMap.has(component as string)) {
+        const node = p.quickMap.get(component as string)!;
         if (isLeafNode(node)) {
           return;
         }
@@ -75,12 +75,12 @@ class NTree implements IRouterTree {
         return;
       }
 
-      const newNode = new NTreeNode(component);
+      const newNode = new NTreeNode(component as string);
       children.push(newNode);
-      p.quickMap.set(component, newNode);
+      p.quickMap.set(component as string, newNode);
       // When the expression like ':id' shows in the route, it should
       // treat it as a parameter node.One tree node can only have one parameter node.
-      if (component.indexOf(':') > -1) {
+      if ((component as string).indexOf(':') > -1) {
         p.paramNode = newNode;
       }
       p = newNode;
