@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { Server: StaticServer, Middlewares, Router, RouterMapFactory } = require('../packages/auf/dist/index');
 const Config = {
-  chunkSize: 10 * 1024 * 1024
+  chunkSize: 50 * 1024 * 1024
 }
 
 const port = 60000
@@ -49,14 +49,63 @@ routerMap.get('/upload/config', async (ctx, next) => {
 
 routerMap.post('/upload', async (ctx, next) => {
   const body = ctx.reqBody;
-  const { files, index } = body;
+  const { files, index, filename, chunkCount } = body;
   const _file = files[0];
   const { file } = _file
 
-  const stream = fs.createWriteStream(path.resolve(__dirname, `${_file.filename}-${index}`));
+  const stream = fs.createWriteStream(path.resolve(__dirname, `${filename}-${index}`));
   stream.write(file, 'binary');
 
-  ctx.body = JSON.stringify({ msg: 'success', success: true });
+  ctx.body = JSON.stringify({ msg: 'success', success: true, data: Number(index) / Number(chunkCount) });
+  stream.end();
+  stream.on('finish', async () => {
+    console.log('Writing Finished')
+    if (Number(chunkCount) === Number(index) + 1) {
+      const mergeStream = fs.createWriteStream(path.resolve(__dirname, filename));
+      const chunkArr = Array.from({ length: chunkCount }).map((_, index) => index);
+      
+      let promise = new Promise((resolve) => {
+        const fd = path.resolve(__dirname, `${filename}-${0}`)
+        const readData = fs.readFileSync(fd)
+  
+        const writable = mergeStream.write(readData, 'binary');
+  
+        // mergeStream.on('finish', () => {
+        //   resolve(1);
+        // });
+        if (!writable) {
+          mergeStream.on('drain', () => {
+            resolve(1);
+            fs.unlink(fd, console.error)
+          })
+        }
+      })
+      
+      let q = 0;
+      while (q < chunkCount - 1) {
+        promise = promise.then(index => {
+          return new Promise(resolve => {
+            const fd = path.resolve(__dirname, `${filename}-${index}`)
+            const readData = fs.readFileSync(fd)
+  
+            const writable = mergeStream.write(readData, 'binary');
+  
+            if (!writable) {
+              mergeStream.on('drain', () => {
+                resolve(index + 1);
+              })
+            } else {
+              resolve(index + 1)
+            }
+
+            fs.unlink(fd, console.error)
+          })
+        })
+        q ++;
+      }
+      
+    }
+  })
 })
 
 const CORS = function () {
@@ -81,9 +130,9 @@ server.applyMiddleware([
   }),
   Middlewares.CacheControl(),
   Middlewares.BodyParser(),
-  Middlewares.StaticRoutes({
-    template: fs.readFileSync(path.resolve(__dirname, './template.html')).toString('utf-8')
-  }),
+  // Middlewares.StaticRoutes({
+  //   template: fs.readFileSync(path.resolve(__dirname, './template.html')).toString('utf-8')
+  // }),
   Router()
 ])
 
