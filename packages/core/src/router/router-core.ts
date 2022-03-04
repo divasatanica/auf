@@ -64,7 +64,7 @@ class RouterMap {
  */
 async function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp) {
   ctx.extendInfo = ctx.extendInfo || {};
-  await wrapCtxWithQueryOrBody(ctx, url);
+  await wrapCtxWithQuery(ctx, url);
   const [urlWithParams] = url.split('?');
   let params = Object.create(null);
 
@@ -97,7 +97,7 @@ async function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp)
   return ctx;
 }
 
-async function wrapCtxWithQueryOrBody(ctx: IContext, url: string) {
+async function wrapCtxWithQuery(ctx: IContext, url: string) {
   const [_, queryString = ''] = url.split('?');
   const query = queryString.split('&').reduce((acc, curr) => {
     if (!curr) {
@@ -110,35 +110,7 @@ async function wrapCtxWithQueryOrBody(ctx: IContext, url: string) {
     }
   }, Object.create(null));
 
-  let data = '';
-  ctx.req.on('data', chunk => {
-    data += chunk;
-  });
-
-  const readReq = new Promise<void>((resolve, reject) => {
-    ctx.req.on('end', () => {
-      const body = data.split('&').reduce((acc, curr) => {
-        if (!curr) {
-          return acc;
-        }
-        const [key, value] = curr.split('=');
-        return {
-          ...acc,
-          [decodeURIComponent(key)]: decodeURIComponent(value)
-        }
-      }, Object.create(null));
-      resolve(body);
-    });
-
-    ctx.req.on('error', err => {
-      reject(err);
-    });
-  })
-
-  const parsedBody = await readReq;
-
   ctx.extendInfo.query = query;
-  ctx.extendInfo.body = parsedBody;
 }
 
 async function dispatchToRouteHandler(ctx: IContext, routerTree: IRouterTree) {

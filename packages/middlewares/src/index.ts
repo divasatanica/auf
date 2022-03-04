@@ -4,6 +4,7 @@ import { Timeout } from './timeout';
 import { CacheControl } from './cache-control';
 import { ErrorBoundary } from './error-boundary';
 import { AuthControl } from './auth-control';
+import { BodyParser } from './body-parser';
 
 export {
   StaticRoutes,
@@ -11,5 +12,6 @@ export {
   Timeout,
   CacheControl,
   ErrorBoundary,
-  AuthControl
+  AuthControl,
+  BodyParser
 }
