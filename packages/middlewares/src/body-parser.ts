@@ -113,6 +113,6 @@ export function BodyParser () {
     const parsedBody = await readReq;
 
     ctx.extendInfo.body = parsedBody;
-    next(ctx);
+    await next(ctx);
   }
 }

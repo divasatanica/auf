@@ -56,7 +56,7 @@ class Context {
 
 class Server {
   public options: IServerOptions;
-  private next: (ctx: IContext) => void;
+  private next: (ctx: IContext) => Promise<unknown>;
   private middlewareMgr: Middlewares;
   constructor(options: IServerOptions) {
     this.options = options;
@@ -68,16 +68,24 @@ class Server {
     http.createServer(async (_, res) => {
       const ctx = new Context(_, res, this.options);
       await this.next(ctx);
-      if (ctx.body == null) {
-        res.end('');
-        return;
+      try {
+        if (ctx.body == null) {
+          res.end('');
+          return;
+        }
+  
+        if (ctx.body.readable) {
+          ctx.body.pipe(res);
+        } else {
+          res.end(ctx.body);
+        }
+      } catch (e) {
+        res.end(JSON.stringify({
+          success: false,
+          message: e
+        }))
       }
-
-      if (ctx.body.readable) {
-        ctx.body.pipe(res);
-      } else {
-        res.end(ctx.body);
-      }
+      
     }).listen({
       port
     }, listeningCallback);

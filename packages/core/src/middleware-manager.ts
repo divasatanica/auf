@@ -11,7 +11,7 @@ export class Middlewares {
     this.middlewares = middlewares
   }
 
-  applyMiddlewares(): (ctx: IContext) => void {
+  applyMiddlewares(): (ctx: IContext) => Promise<unknown> {
     this.middlewares = this.middlewares.map(fn => {
       return function (next = (() => Promise.resolve())) {
         return async function (ctx: IContext) {

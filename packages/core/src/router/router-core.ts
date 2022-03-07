@@ -62,9 +62,9 @@ class RouterMap {
  * @param urlPattern Matched URL pattern
  * @returns Wrapped context object with params
  */
-async function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp) {
+function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp) {
   ctx.extendInfo = ctx.extendInfo || {};
-  await wrapCtxWithQuery(ctx, url);
+  wrapCtxWithQuery(ctx, url);
   const [urlWithParams] = url.split('?');
   let params = Object.create(null);
 
@@ -97,7 +97,7 @@ async function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp)
   return ctx;
 }
 
-async function wrapCtxWithQuery(ctx: IContext, url: string) {
+function wrapCtxWithQuery(ctx: IContext, url: string) {
   const [_, queryString = ''] = url.split('?');
   const query = queryString.split('&').reduce((acc, curr) => {
     if (!curr) {
@@ -117,7 +117,7 @@ async function dispatchToRouteHandler(ctx: IContext, routerTree: IRouterTree) {
   const { url } = ctx.req;
   const { handler, path } = routerTree.getHandlerFromTree(url!);
 
-  const wrappedCtx = await wrapCtx(ctx, url!, path);
+  const wrappedCtx = wrapCtx(ctx, url!, path);
 
   return {
     ctx: wrappedCtx,
