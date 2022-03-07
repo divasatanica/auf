@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { Server: StaticServer, Middlewares, Router, RouterMapFactory } = require('../packages/auf/dist/index');
 const Config = {
-  chunkSize: 50 * 1024 * 1024
+  chunkSize: 5 * 1024 * 1024
 }
 
 const port = 60000
@@ -13,6 +13,14 @@ const callback = () => {
 const errorHandler = e => {
   console.error('[static-server] Error:', e.message, e.stack);
 }
+const fsredirPromise = path => new Promise((resolve, reject) => {
+  fs.readdir(path, (err, files) => {
+    if (err) {
+      reject(err);
+    }
+    resolve(files);
+  });
+});
 
 const server = new StaticServer({
   port,
@@ -45,18 +53,33 @@ routerMap.get(/aabb\/(\w+)\/(\d+)/, async (ctx, next) => {
 routerMap.get('/upload/config', async (ctx, next) => {
   console.log(Config)
   ctx.body = JSON.stringify(Object.assign({}, Config))
+  next(ctx);
+});
+
+routerMap.get('/upload/chunkIndex', async (ctx, next) => {
+  const res = await fsredirPromise(path.resolve(__dirname, './'));
+  // const res = [];
+  const hash = ctx.query.hash;
+  const fileWithHash = res.filter(file => file.indexOf(hash) === 0)
+  ctx.body = JSON.stringify({
+    success: true,
+    message: '',
+    data: fileWithHash.length
+  });
+  await next(ctx);
 });
 
 routerMap.post('/upload', async (ctx, next) => {
   const body = ctx.reqBody;
-  const { files, index, filename, chunkCount } = body;
+  const { files, index, filename: _filename, chunkCount, fileHash } = body;
   const _file = files[0];
-  const { file } = _file
+  const { file } = _file;
+  const filename = decodeURIComponent(_filename);
 
-  const stream = fs.createWriteStream(path.resolve(__dirname, `${filename}-${index}`));
+  const stream = fs.createWriteStream(path.resolve(__dirname, `${fileHash}-${index}`));
   stream.write(file, 'binary');
 
-  ctx.body = JSON.stringify({ msg: 'success', success: true, data: Number(index) / Number(chunkCount) });
+  ctx.body = JSON.stringify({ msg: 'success', success: true, data: (Number(index) + 1) / Number(chunkCount) });
   stream.end();
   stream.on('finish', async () => {
     console.log('Writing Finished')
@@ -65,7 +88,7 @@ routerMap.post('/upload', async (ctx, next) => {
       const chunkArr = Array.from({ length: chunkCount }).map((_, index) => index);
       
       let promise = new Promise((resolve) => {
-        const fd = path.resolve(__dirname, `${filename}-${0}`)
+        const fd = path.resolve(__dirname, `${fileHash}-${0}`)
         const readData = fs.readFileSync(fd)
   
         const writable = mergeStream.write(readData, 'binary');
@@ -76,7 +99,7 @@ routerMap.post('/upload', async (ctx, next) => {
         if (!writable) {
           mergeStream.on('drain', () => {
             resolve(1);
-            fs.unlink(fd, console.error)
+            fs.existsSync(fd) && fs.unlink(fd, err => err && console.error(err))
           })
         }
       })
@@ -85,7 +108,7 @@ routerMap.post('/upload', async (ctx, next) => {
       while (q < chunkCount - 1) {
         promise = promise.then(index => {
           return new Promise(resolve => {
-            const fd = path.resolve(__dirname, `${filename}-${index}`)
+            const fd = path.resolve(__dirname, `${fileHash}-${index}`)
             const readData = fs.readFileSync(fd)
   
             const writable = mergeStream.write(readData, 'binary');
@@ -98,14 +121,15 @@ routerMap.post('/upload', async (ctx, next) => {
               resolve(index + 1)
             }
 
-            fs.unlink(fd, console.error)
+            fs.unlink(fd, err => err && console.error(err))
           })
         })
         q ++;
       }
       
     }
-  })
+  });
+  await next(ctx);
 })
 
 const CORS = function () {
@@ -123,11 +147,11 @@ server.applyMiddleware([
   Middlewares.ErrorBoundary({ errorHandler }),
   Middlewares.Timeout({ timeout }),
   Middlewares.Logger(console),
-  Middlewares.AuthControl({
-    whitelist: [
-      '/'
-    ]
-  }),
+  // Middlewares.AuthControl({
+  //   whitelist: [
+  //     '/'
+  //   ]
+  // }),
   Middlewares.CacheControl(),
   Middlewares.BodyParser(),
   // Middlewares.StaticRoutes({
