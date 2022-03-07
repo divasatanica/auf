@@ -3,6 +3,8 @@ import { makeRouteTree, IRouterTree } from './prefix-tree';
 
 const methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
 
+type IHTTPMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
+
 class RouterMap {
   public routerMap: Map<string, IRouterTree> = new Map();
 
@@ -12,7 +14,7 @@ class RouterMap {
     });
   }
 
-  register(method: string, urlPattern: string | RegExp, handler: Function) {
+  register(method: IHTTPMethods, urlPattern: string | RegExp, handler: Function) {
     const methodRouterTree = this.routerMap.get(method);
 
     if (!methodRouterTree) {

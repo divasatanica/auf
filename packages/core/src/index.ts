@@ -1,5 +1,4 @@
-import { Server, IContext, IServerOptions } from './server';
-import { ClusterServer, IClusterServerOptions } from './cluster-server';
+import { ClusterServer, Server, IContext, IServerOptions, IClusterServerOptions } from './server';
 import { Router, RouterMapFactory } from './router';
 
 export {

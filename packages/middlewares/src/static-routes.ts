@@ -41,6 +41,7 @@ export function StaticRoutes(options) {
           uglify: true
         }*/);
         ctx.res.statusCode = 200;
+        ctx.extendInfo.handled = true;
         await next(ctx);
         return;
       }

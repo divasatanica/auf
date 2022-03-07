@@ -8,11 +8,13 @@ export function ErrorBoundary(options) {
     try {
       await next(ctx);
     } catch (e) {
-      ctx.body = `Error: ${e.message}`;
+      ctx.body = JSON.stringify({
+        message: `Error: ${e.message}`,
+        success: false
+      });
       ctx.res.statusCode = e.statusCode || 500;
       ctx.res.statusMessage = e.statusMessage || 'Internal Error';
       errorHandler(e);
-
     }
   } 
 }

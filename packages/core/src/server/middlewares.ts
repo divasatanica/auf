@@ -1,11 +1,7 @@
 import { compose } from '@vergiss/auf-helpers';
-import { IContext } from './server';
+import { IContext, IMiddleWare, IMiddlewareAbility } from './interface';
 
-export interface IMiddleWare {
-  (ctx: IContext, next?: IMiddleWare): any;
-}
-
-export class Middlewares {
+class Middlewares {
   public middlewares: Function[];
   constructor (middlewares: Function[]) {
     this.middlewares = middlewares
@@ -22,5 +18,14 @@ export class Middlewares {
     const [lastActionGenerator, ...restActionGenerators] = this.middlewares.reverse();
 
     return compose(restActionGenerators)(lastActionGenerator());
+  }
+}
+
+export class MiddlewaresAbility implements IMiddlewareAbility {
+  next: (ctx: IContext) => Promise<unknown>;
+  private middleware: Middlewares;
+  applyMiddleware(middlewares: IMiddleWare[]): void {
+    this.middleware = new Middlewares(middlewares);
+    this.next = this.middleware.applyMiddlewares();
   }
 }

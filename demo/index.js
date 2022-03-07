@@ -6,7 +6,7 @@ const Config = {
 }
 
 const port = 60000
-const timeout = 15000
+const timeout = 5000
 const callback = () => {
   console.log('Static Server Listening on', port);
 }
@@ -24,7 +24,7 @@ const fsredirPromise = path => new Promise((resolve, reject) => {
 
 const server = new StaticServer({
   port,
-  assetsRoot: path.resolve(__dirname, '../public'),
+  assetsRoot: path.resolve(__dirname, './public'),
   workerNum: 8,
 });
 
@@ -154,9 +154,9 @@ server.applyMiddleware([
   // }),
   Middlewares.CacheControl(),
   Middlewares.BodyParser(),
-  // Middlewares.StaticRoutes({
-  //   template: fs.readFileSync(path.resolve(__dirname, './template.html')).toString('utf-8')
-  // }),
+  Middlewares.StaticRoutes({
+    template: fs.readFileSync(path.resolve(__dirname, './template.html')).toString('utf-8')
+  }),
   Router()
 ])
 

@@ -15,7 +15,10 @@ export function Timeout(config = { timeout: 15000 }) {
     const { hasTimeout } = result;
 
     if (hasTimeout) {
-      ctx.body = 'Timeout';
+      ctx.body = JSON.stringify({
+        success: false,
+        message: `Request timeout, proceeded ${config.timeout} ms`
+      });
       ctx.res.statusCode = 503;
     }
   }
