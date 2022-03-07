@@ -1,6 +1,6 @@
 {
   "name": "@vergiss/auf",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "> TODO: description",
   "author": "zenglingji <zenglingji@joyy.sg>",
   "homepage": "https://github.com/divasatanica/auf#readme",
@@ -29,8 +29,8 @@
     "url": "https://github.com/divasatanica/auf/issues"
   },
   "dependencies": {
-    "@vergiss/auf-core": "^0.2.1",
-    "@vergiss/auf-middlewares": "^0.2.1"
+    "@vergiss/auf-core": "^0.3.0",
+    "@vergiss/auf-middlewares": "^0.3.0"
   },
   "devDependencies": {
     "typescript": "^4.3.2"
