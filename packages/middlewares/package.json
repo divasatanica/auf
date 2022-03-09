@@ -22,6 +22,7 @@
     "url": "git+https://github.com/divasatanica/auf.git"
   },
   "scripts": {
+    "test": "jest",
     "dev": "tsc -w",
     "build": "rimraf ./dist && tsc && mkdir -p ./dist/static && cp ./static/template.html ./dist/static/template.html"
   },
@@ -30,8 +31,10 @@
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
+    "@types/node": "^15.12.1",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
     "typescript": "^4.3.2"
   },
   "dependencies": {
