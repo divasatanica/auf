@@ -16,7 +16,7 @@ test('Should let the context pass through', done => {
       assetsRoot: '/dev/coma'
     },
     body: {} as any
-  };
+  } as any;
   const fakeNext = () => new Promise<void>(resolve => {
     fakeContext.body = JSON.stringify({ success: true, data: 1 });
     resolve();
@@ -33,7 +33,7 @@ test('Should return 403 error', done => {
   const AuthControlMiddleware = AuthControl(Config);
   const fakeContext = {
     req: {
-      url: '/imsgs/1.jpg'
+      url: '/imgs/1.jpg'
     },
     serverOptions: {
       assetsRoot: '/dev/coma'
@@ -42,7 +42,7 @@ test('Should return 403 error', done => {
       statusCode: 200
     },
     body: {} as any
-  };
+  } as any;
   const fakeNext = () => new Promise<void>(resolve => {
     fakeContext.body = JSON.stringify({ success: true, data: 1 });
     resolve();

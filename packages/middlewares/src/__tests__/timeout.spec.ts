@@ -4,6 +4,8 @@ interface IFakeContext {
   body: any;
   extendInfo: any;
   res: any;
+  serverOptions: any;
+  req: any;
 }
 
 let fakeContext: IFakeContext;
@@ -17,8 +19,10 @@ beforeEach(() => {
   fakeContext = {
     body: {},
     extendInfo: {},
-    res: {}
-  }
+    res: {},
+    req: {},
+    serverOptions: {}
+  };
 });
 
 test('Should set timeout result to ctx.body', done => {

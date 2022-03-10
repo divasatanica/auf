@@ -8,7 +8,7 @@ test('Should call the log function one time', done => {
     body: {},
     res: {},
     req: {}
-  };
+  } as any;
 
   LoggerMiddleware(fakeContext, () => Promise.resolve()).then(() => {
     expect(logFn).toBeCalledTimes(1);
@@ -26,7 +26,7 @@ test('Should call the console.log function one time without logger injected', do
     body: {},
     res: {},
     req: {}
-  };
+  } as any;
 
   LoggerMiddleware(fakeContext, () => Promise.resolve()).then(() => {
     expect(console.log).toBeCalledTimes(1);
