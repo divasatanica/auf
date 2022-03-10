@@ -2,15 +2,17 @@ import * as path from 'path';
 import { IContext } from '@vergiss/auf-core';
 import { checkMimeTypes, LRUCache } from '@vergiss/auf-helpers';
 
+type CacheControlConfigType = Record<string, string|number>
+
 const DefaultMaxAges = {
   'text/html': 60,
   'image/*': 86400,
   'application/javascript': 3600
-};
+} as CacheControlConfigType;
 
 const CacheControlHeaderName = 'Cache-Control';
 
-export function CacheControl(config = DefaultMaxAges) {
+export function CacheControl(config: CacheControlConfigType = DefaultMaxAges) {
   return async function CacheControlMiddleware(ctx: IContext, next: Function) {
     const finalConfig = {
       ...DefaultMaxAges,

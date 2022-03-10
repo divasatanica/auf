@@ -53,3 +53,53 @@ test('Should return 403 error', done => {
     done();
   });
 });
+
+test('Should return 403 error', done => {
+  const AuthControlMiddleware = AuthControl(Config);
+  const fakeContext = {
+    req: {
+      
+    },
+    serverOptions: {
+      assetsRoot: '/dev/coma'
+    },
+    res: {
+      statusCode: 200
+    },
+    body: {} as any
+  } as any;
+  const fakeNext = () => new Promise<void>(resolve => {
+    fakeContext.body = JSON.stringify({ success: true, data: 1 });
+    resolve();
+  })
+  AuthControlMiddleware(fakeContext, fakeNext).then(() => {
+    expect(fakeContext.res.statusCode).toEqual(403);
+    expect(fakeContext.body).toBe('Forbidden Path');
+    done();
+  });
+});
+
+test('Should return 403 error', done => {
+  const AuthControlMiddleware = AuthControl({});
+  const fakeContext = {
+    req: {
+      
+    },
+    serverOptions: {
+      assetsRoot: '/dev/coma'
+    },
+    res: {
+      statusCode: 200
+    },
+    body: {} as any
+  } as any;
+  const fakeNext = () => new Promise<void>(resolve => {
+    fakeContext.body = JSON.stringify({ success: true, data: 1 });
+    resolve();
+  })
+  AuthControlMiddleware(fakeContext, fakeNext).then(() => {
+    expect(fakeContext.res.statusCode).toEqual(403);
+    expect(fakeContext.body).toBe('Forbidden Path');
+    done();
+  });
+});

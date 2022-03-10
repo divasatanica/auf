@@ -22,7 +22,7 @@ beforeEach(() => {
     res: {},
     req: {},
     serverOptions: {}
-  };
+  } as any;
 });
 
 test('Should set timeout result to ctx.body', done => {
@@ -60,7 +60,6 @@ test('Should correctly set ctx.body without timeout', done => {
 });
 
 test('Should set default timeout', done => {
-  jest.setTimeout(16000);
   const TimeoutMiddleware = Timeout();
   const sleep = (time: number) => new Promise<void>(resolve => {
     setTimeout(() => {
