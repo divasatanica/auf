@@ -4,7 +4,11 @@ import { uuid } from '@vergiss/auf-helpers';
 const sign = '[static-server]';
 const outSign ='<<<';
 
-export function Logger(logger = console) {
+interface ILogger {
+  log(...message: unknown[]): void;
+}
+
+export function Logger(logger: ILogger = console) {
   return async function loggerMiddleware(ctx: IContext, next: Function) {
     const { req, res } = ctx;
     const { method, url } = req;

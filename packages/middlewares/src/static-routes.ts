@@ -6,7 +6,7 @@ import { getMD5 } from '@vergiss/auf-helpers';
 
 export function StaticRoutes(options) {
   return async function StaticRoutesMiddleware(ctx: IContext, next: Function) {
-    const { template = fs.readFileSync(path.resolve(__dirname, './static/template.html')).toString('utf-8') } = options;
+    const { template = fs.readFileSync(path.resolve(__dirname, './static/template.html')).toString('utf-8'), fileSystem = fs } = options;
     const { req, serverOptions } = ctx;
     const { url } = req;
     const { assetsRoot } = serverOptions;
@@ -17,10 +17,9 @@ export function StaticRoutes(options) {
   
     const resourcePath = assetsRoot + (global.decodeURIComponent(url!) || '');
     try {
-      const stat = fs.lstatSync(resourcePath);
-
+      const stat = fileSystem.lstatSync(resourcePath);
       if (stat.isDirectory()) {
-        const dirs = fs.readdirSync(resourcePath, {
+        const dirs = fileSystem.readdirSync(resourcePath, {
           withFileTypes: true
         });
         let files = [] as any[];
@@ -33,7 +32,7 @@ export function StaticRoutes(options) {
             path: path.join(url!, value.name),
             name: name
           });
-        })
+        });
         ctx.body = Engine.renderWithStream(template, {
           files,
           currentDirectory: global.decodeURIComponent(url!)
@@ -60,10 +59,10 @@ export function StaticRoutes(options) {
     }
     
     const { res } = ctx;
-    const etag = await getMD5(resourcePath);
+    const etag = await getMD5(resourcePath, fileSystem);
     res.setHeader('Etag', etag);
     ctx.extendInfo.etag = etag;
-    ctx.body = fs.createReadStream(resourcePath);
+    ctx.body = fileSystem.createReadStream(resourcePath);
     await next(ctx);
   }
 }

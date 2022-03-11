@@ -11,7 +11,11 @@ export function AuthControl(options) {
 
     let authorizedPath = false;
     for (let i = 0, len = whitelist.length; i < len; i ++) {
-      const whitelistUrl = path.resolve(assetsRoot, whitelist[i]);
+      let whitelistUrl = path.resolve(assetsRoot, whitelist[i]);
+
+      if (whitelistUrl[whitelistUrl.length - 1] !== '/') {
+        whitelistUrl += '/';
+      }
 
       if (requestUrl.indexOf(whitelistUrl) === 0) {
         authorizedPath = true;

@@ -1,20 +1,20 @@
 import { createHash } from 'crypto';
-import { createReadStream } from 'fs';
+import * as fs from 'fs';
 
-function getMD5(file: string): Promise<string> {
-  const fileStream = createReadStream(file);
+function getMD5(file: string, fileSystem = fs): Promise<string> {
+  const fileStream = fileSystem.createReadStream(file);
 
   const hash = createHash('md5');
 
   return new Promise((resolve, reject) => {
     fileStream.on('readable', () => {
-      const data = fileStream.read();
+      let data: string;
 
-      if (data) {
+      while (data = fileStream.read()) {
         hash.update(data);
-      } else {
-        resolve(hash.digest('hex'));
       }
+
+      resolve(hash.digest('hex'));
     });
 
     fileStream.once('error', err => {
