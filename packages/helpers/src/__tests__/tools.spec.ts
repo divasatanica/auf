@@ -1,5 +1,7 @@
 import { uuid } from '..';
 
-test('Should be a string', () => {
-  expect(typeof uuid(5)).toBe('string');
+describe('[Tools @@ helpers] Normal Test', () => {
+  test('Should be a string', () => {
+    expect(typeof uuid(5)).toBe('string');
+  });
 });
