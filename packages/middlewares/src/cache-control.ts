@@ -13,13 +13,13 @@ const DefaultMaxAges = {
 const CacheControlHeaderName = 'Cache-Control';
 
 export function CacheControl(config: CacheControlConfigType = DefaultMaxAges) {
+  const lruCache = new LRUCache(100);
+  const countLruCache = new LRUCache(100);
   return async function CacheControlMiddleware(ctx: IContext, next: Function) {
     const finalConfig = {
       ...DefaultMaxAges,
       ...config
     };
-    const lruCache = new LRUCache(100);
-    const countLruCache = new LRUCache(100);
     const { res, req } = ctx;
     const { url } = req;
     const extname = path.extname(url!);
@@ -32,6 +32,9 @@ export function CacheControl(config: CacheControlConfigType = DefaultMaxAges) {
         const count = countLruCache.get(url!);
         countLruCache.put(url!, count + 1);
         res.statusCode = 304;
+        // TODO Should check the HTTP RFC to confirm the response while client sent request with etag in header
+        res.setHeader('etag', etag);
+        res.setHeader('cache-control', 'max-age=0');
         ctx.body = '';
         return;
       }
