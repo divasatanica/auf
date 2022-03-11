@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "dev": "tsc -w",
-    "build": "rimraf ./dist && tsc"
+    "build": "npm test && rimraf ./dist && tsc"
   },
   "files": [
     "dist"
@@ -15,7 +15,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "author": "",
+  "author": "divasatanica <coma.desperado@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^27.4.1",

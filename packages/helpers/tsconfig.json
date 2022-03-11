@@ -21,7 +21,8 @@
     "lib",
     "webpack",
     "es",
-    "dist"
+    "dist",
+    "src/__tests__/*.ts"
   ],
   "lib": [
     "esnext",

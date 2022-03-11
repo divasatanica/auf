@@ -2,7 +2,7 @@
   "name": "@vergiss/auf",
   "version": "0.3.0",
   "description": "> TODO: description",
-  "author": "zenglingji <zenglingji@joyy.sg>",
+  "author": "divasatanica <coma.desperado@gmail.com>",
   "homepage": "https://github.com/divasatanica/auf#readme",
   "license": "ISC",
   "main": "dist/index.js",
@@ -22,7 +22,8 @@
     "url": "git+https://github.com/divasatanica/auf.git"
   },
   "scripts": {
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "build": "rimraf ./dist && tsc"
   },
   "bugs": {
     "url": "https://github.com/divasatanica/auf/issues"
@@ -32,6 +33,7 @@
     "@vergiss/auf-middlewares": "^0.3.0"
   },
   "devDependencies": {
+    "rimraf": "^3.0.2",
     "typescript": "^4.3.2"
   },
   "gitHead": "09110f5b29a9ef377413c44e343f4a4e562ff003"

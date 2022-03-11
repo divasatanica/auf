@@ -1,8 +1,8 @@
 import * as path from 'path';
-import { IContext } from '@vergiss/auf-core';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing';
 
-export function AuthControl(options) {
-  return async function AuthControlMiddleware(ctx: IContext, next: Function) {
+export function AuthControl(options): IMiddleWare {
+  return async function AuthControlMiddleware(ctx: IContext, next: IMiddleWare) {
     const { whitelist = [] } = options;
     const { req, serverOptions } = ctx;
     const { url = '' } = req;
