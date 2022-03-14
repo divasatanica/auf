@@ -1,6 +1,6 @@
 {
   "name": "@vergiss/auf-core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "> TODO: description",
   "author": "divasatanica <coma.desperado@gmail.com>",
   "homepage": "https://github.com/divasatanica/auf#readme",
@@ -31,13 +31,13 @@
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/node": "^15.6.2",
-    "@vergiss/auf-typing": "^1.0.0",
+    "@vergiss/auf-typing": "^1.0.1",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@vergiss/auf-helpers": "^0.2.1"
+    "@vergiss/auf-helpers": "^0.2.2"
   },
   "gitHead": "09110f5b29a9ef377413c44e343f4a4e562ff003"
 }
