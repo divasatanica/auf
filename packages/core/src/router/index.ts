@@ -1,3 +1,4 @@
+import { IMiddleWare } from '@vergiss/auf-typing';
 import { IContext } from '../server';
 import { RouterMap, dispatchToRouteHandler } from './router-core';
 
@@ -21,8 +22,8 @@ function RouterMapFactory () {
   return routerMap;
 }
 
-function Router() {
-  return async function RouterMiddleware(ctx: IContext, next: Function) {
+function Router(): IMiddleWare {
+  return async function RouterMiddleware(ctx: IContext, next: IMiddleWare) {
     if (ctx.extendInfo) {
       if (ctx.extendInfo.handled) {
         await next(ctx);

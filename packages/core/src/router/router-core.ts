@@ -1,7 +1,12 @@
+import { IMiddleWare } from '@vergiss/auf-typing';
 import { IContext } from '../server';
 import { makeRouteTree, IRouterTree } from './prefix-tree';
 
 const methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
+
+type IHTTPMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
+
+type RouteHandlerType = (ctx: IContext, next?: RouteHandlerType | IMiddleWare) => void;
 
 class RouterMap {
   public routerMap: Map<string, IRouterTree> = new Map();
@@ -12,7 +17,7 @@ class RouterMap {
     });
   }
 
-  register(method: string, urlPattern: string | RegExp, handler: Function) {
+  register(method: IHTTPMethods, urlPattern: string | RegExp, handler: RouteHandlerType) {
     const methodRouterTree = this.routerMap.get(method);
 
     if (!methodRouterTree) {
@@ -30,27 +35,27 @@ class RouterMap {
     return this.routerMap.get(method);
   }
 
-  get(urlPattern: string, handler: Function) {
+  get(urlPattern: string, handler: RouteHandlerType) {
     return this.register('GET', urlPattern, handler);
   }
 
-  post(urlPattern: string, handler: Function) {
+  post(urlPattern: string, handler: RouteHandlerType) {
     return this.register('POST', urlPattern, handler);
   }
 
-  delete(urlPattern: string, handler: Function) {
+  delete(urlPattern: string, handler: RouteHandlerType) {
     return this.register('DELETE', urlPattern, handler);
   }
 
-  put(urlPattern: string, handler: Function) {
+  put(urlPattern: string, handler: RouteHandlerType) {
     return this.register('PUT', urlPattern, handler);
   }
 
-  patch(urlPattern: string, handler: Function) {
+  patch(urlPattern: string, handler: RouteHandlerType) {
     return this.register('PATCH', urlPattern, handler);
   }
 
-  options(urlPattern: string, handler: Function) {
+  options(urlPattern: string, handler: RouteHandlerType) {
     return this.register('OPTIONS', urlPattern, handler);
   }
 }

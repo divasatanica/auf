@@ -18,8 +18,8 @@ const TYPE_CONDITION_ITEM_IF = Symbol('conditionItemIf');
 const TYPE_CONDITION_ITEM_ELSEIF = Symbol('conditionItemElseIf');
 const TYPE_CONDITION_ITEM_ELSE = Symbol('conditionItemElse');
 
-const TYPE_DATA_PROP_INFO = Symbol('dataPropInfo');
-const TYPE_ITERATION_ITEM = Symbol('iterationItem');
+export const TYPE_DATA_PROP_INFO = Symbol('dataPropInfo');
+export const TYPE_ITERATION_ITEM = Symbol('iterationItem');
 
 export const EVENT_TOKEN_GENERATED = 'tokenGenerated';
 export const EVENT_PARSING_END = 'parsingEnd';

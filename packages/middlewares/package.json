@@ -2,7 +2,7 @@
   "name": "@vergiss/auf-middlewares",
   "version": "0.3.0",
   "description": "> TODO: description",
-  "author": "zenglingji <zenglingji@joyy.sg>",
+  "author": "divasatanica <coma.desperado@gmail.com>",
   "homepage": "https://github.com/divasatanica/auf#readme",
   "license": "ISC",
   "main": "dist/index.js",
@@ -22,18 +22,24 @@
     "url": "git+https://github.com/divasatanica/auf.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
+    "test": "jest",
     "dev": "tsc -w",
-    "build": "rimraf ./dist && tsc && mkdir -p ./dist/static && cp ./static/template.html ./dist/static/template.html"
+    "build": "npm test && rimraf ./dist && tsc && mkdir -p ./dist/static && cp ./src/static/template.html ./dist/static/template.html"
   },
   "bugs": {
     "url": "https://github.com/divasatanica/auf/issues"
   },
   "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/node": "^15.12.1",
+    "@vergiss/auf-typing": "^1.0.0",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
     "typescript": "^4.3.2"
   },
+  "typings": "@vergiss/auf-typing",
   "dependencies": {
-    "@vergiss/auf-core": "^0.3.0",
     "@vergiss/auf-helpers": "^0.2.1",
     "@vergiss/auf-template-engine": "^0.3.0"
   },

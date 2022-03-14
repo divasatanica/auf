@@ -1,8 +1,8 @@
 import * as path from 'path';
-import { IContext } from '@vergiss/auf-core';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing';
 
-export function AuthControl(options) {
-  return async function AuthControlMiddleware(ctx: IContext, next: Function) {
+export function AuthControl(options): IMiddleWare {
+  return async function AuthControlMiddleware(ctx: IContext, next: IMiddleWare) {
     const { whitelist = [] } = options;
     const { req, serverOptions } = ctx;
     const { url = '' } = req;
@@ -11,7 +11,11 @@ export function AuthControl(options) {
 
     let authorizedPath = false;
     for (let i = 0, len = whitelist.length; i < len; i ++) {
-      const whitelistUrl = path.resolve(assetsRoot, whitelist[i]);
+      let whitelistUrl = path.resolve(assetsRoot, whitelist[i]);
+
+      if (whitelistUrl[whitelistUrl.length - 1] !== '/') {
+        whitelistUrl += '/';
+      }
 
       if (requestUrl.indexOf(whitelistUrl) === 0) {
         authorizedPath = true;

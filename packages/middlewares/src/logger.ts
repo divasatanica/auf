@@ -1,11 +1,15 @@
-import { IContext } from '@vergiss/auf-core';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing'
 import { uuid } from '@vergiss/auf-helpers';
 
 const sign = '[static-server]';
 const outSign ='<<<';
 
-export function Logger(logger = console) {
-  return async function loggerMiddleware(ctx: IContext, next: Function) {
+interface ILogger {
+  log(...message: unknown[]): void;
+}
+
+export function Logger(logger: ILogger = console): IMiddleWare {
+  return async function loggerMiddleware(ctx: IContext, next: IMiddleWare) {
     const { req, res } = ctx;
     const { method, url } = req;
     const now = Date.now();
