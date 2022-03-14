@@ -32,7 +32,7 @@ describe('[Timeout @@ middlewares] Normal Test', () => {
       setTimeout(resolve, time);
     });
     
-    TimeoutMiddleware(fakeContext, () => sleep(4000)).then(() => {
+    TimeoutMiddleware(fakeContext as any, () => sleep(4000)).then(() => {
       const body = JSON.parse(fakeContext.body);
       expect(body.success).toEqual(false);
       expect(body.message).toBe(`Request timeout, proceeded ${Config.timeout} ms`)
@@ -51,7 +51,7 @@ describe('[Timeout @@ middlewares] Normal Test', () => {
       }, time);
     });
     
-    TimeoutMiddleware(fakeContext, () => sleep(500)).then(() => {
+    TimeoutMiddleware(fakeContext as any, () => sleep(500)).then(() => {
       const body = JSON.parse(fakeContext.body);
       expect(body.success).toEqual(true);
       expect(body.data).toEqual(1);
@@ -71,7 +71,7 @@ describe('[Timeout @@ middlewares] Default Config Test', () => {
       }, time);
     });
     
-    TimeoutMiddleware(fakeContext, () => sleep(15500)).then(() => {
+    TimeoutMiddleware(fakeContext as any, () => sleep(15500)).then(() => {
       const body = JSON.parse(fakeContext.body);
       expect(body.success).toEqual(false);
       expect(body.message).toBe(`Request timeout, proceeded ${15000} ms`)
