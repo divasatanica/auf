@@ -13,8 +13,8 @@ export interface IContext {
   req: http.IncomingMessage;
   res: http.ServerResponse;
   serverOptions: IServerOptions;
-  body?: string | Readable | Record<string, any>;
-  extendInfo?: Record<string, any>;
+  body: string | Readable | Record<string, any>;
+  extendInfo: Record<string, any>;
   get reqBody(): Record<string, any>;
   get query(): Record<string, string>;
   get params(): Record<string, string>; 
