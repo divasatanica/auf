@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { IContext } from '@vergiss/auf-core';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing'
 import { Engine } from '@vergiss/auf-template-engine';
 import { getMD5 } from '@vergiss/auf-helpers';
 
-export function StaticRoutes(options) {
-  return async function StaticRoutesMiddleware(ctx: IContext, next: Function) {
+export function StaticRoutes(options): IMiddleWare {
+  return async function StaticRoutesMiddleware(ctx: IContext, next: IMiddleWare ) {
     const { template = fs.readFileSync(path.resolve(__dirname, './static/template.html')).toString('utf-8'), fileSystem = fs } = options;
     const { req, serverOptions } = ctx;
     const { url } = req;

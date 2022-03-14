@@ -1,7 +1,7 @@
-import { IContext } from '@vergiss/auf-core';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing'
 
-export function Timeout(config = { timeout: 15000 }) {
-  return async function TimeoutMiddleware(ctx: IContext, next: Function) {
+export function Timeout(config = { timeout: 15000 }): IMiddleWare {
+  return async function TimeoutMiddleware(ctx: IContext, next: IMiddleWare) {
     const timeout = new Promise(r => {
       setTimeout(() => r({ hasTimeout: true }), config.timeout);
     });

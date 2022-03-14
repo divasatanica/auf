@@ -1,4 +1,5 @@
-import * as http from 'http';
+import { IContext, IServerOptions, IMiddleWare  } from '@vergiss/auf-typing';
+export { IContext, IServerOptions, IMiddleWare }
 
 export interface IServer {
   setup(listeningCallback?: () => void): void;
@@ -11,28 +12,8 @@ export interface IBaseServer {
   setup(listeningCallback?: () => void): void;
 }
 
-export interface IServerOptions {
-  port: number;
-  assetsRoot: string;
-  timeout?: number;
-  listeningCallback?: () => void;
-  errorHandler?: (e: Error) => void;
-}
-
-export interface IContext {
-  req: http.IncomingMessage;
-  res: http.ServerResponse;
-  serverOptions: IServerOptions;
-  body?: any;
-  extendInfo?: any;
-}
-
 export interface IClusterServerOptions extends IServerOptions {
   workerNum?: number;
-}
-
-export interface IMiddleWare {
-  (ctx: IContext, next?: IMiddleWare): any;
 }
 
 export interface IMiddlewareAbility {

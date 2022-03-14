@@ -1,5 +1,5 @@
 import { IncomingMessage } from 'http';
-import { IContext } from '@vergiss/auf-core';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing'
 
 
 const kWWWUrlEncoded = 'application/x-www-urlencoded'
@@ -28,8 +28,8 @@ function getMatching(string: string, regex: RegExp) {
   return matches[1]
 }
 
-export function BodyParser () {
-  return async function BodyParserMiddleware (ctx: IContext, next: Function) {
+export function BodyParser (): IMiddleWare {
+  return async function BodyParserMiddleware (ctx: IContext, next: IMiddleWare) {
     const { req } = ctx;
     let ContentType = req.headers['content-type'];
     if (ContentType?.startsWith(kMultipartFormdata)) {

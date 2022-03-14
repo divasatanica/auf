@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { IContext } from '@vergiss/auf-core';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing'
 import { checkMimeTypes, LRUCache } from '@vergiss/auf-helpers';
 
 type CacheControlConfigType = Record<string, string|number>
@@ -12,10 +12,10 @@ const DefaultMaxAges = {
 
 const CacheControlHeaderName = 'Cache-Control';
 
-export function CacheControl(config: CacheControlConfigType = DefaultMaxAges) {
+export function CacheControl(config: CacheControlConfigType = DefaultMaxAges): IMiddleWare {
   const lruCache = new LRUCache(100);
   const countLruCache = new LRUCache(100);
-  return async function CacheControlMiddleware(ctx: IContext, next: Function) {
+  return async function CacheControlMiddleware(ctx: IContext, next: IMiddleWare) {
     const finalConfig = {
       ...DefaultMaxAges,
       ...config
@@ -26,7 +26,7 @@ export function CacheControl(config: CacheControlConfigType = DefaultMaxAges) {
     const mimeTypes = checkMimeTypes(extname);
 
     const etag = req.headers['if-none-match'];
-    if (etag === lruCache.get(url!)) {
+    if (etag && etag === lruCache.get(url!)) {
       // Update the etag once per 10 access times
       if (countLruCache.get(url!) < 10) {
         const count = countLruCache.get(url!);
