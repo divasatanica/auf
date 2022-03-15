@@ -7,10 +7,6 @@
   "license": "ISC",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
   "files": [
     "dist"
   ],
@@ -24,7 +20,7 @@
   "scripts": {
     "test": "jest",
     "dev": "tsc -w",
-    "build": "npm test && rimraf ./dist && tsc && mkdir -p ./dist/static && cp ./src/static/template.html ./dist/static/template.html"
+    "build": "npm test && rimraf ./dist && tsc && mkdir -p ./dist/static && cp ./src/static/* ./dist/static"
   },
   "bugs": {
     "url": "https://github.com/divasatanica/auf/issues"
@@ -38,7 +34,6 @@
     "ts-node": "^10.7.0",
     "typescript": "^4.3.2"
   },
-  "typings": "@vergiss/auf-typing",
   "dependencies": {
     "@vergiss/auf-helpers": "^0.2.2",
     "@vergiss/auf-template-engine": "^0.3.1"

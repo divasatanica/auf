@@ -1,24 +1,7 @@
-import { compose, composePromise } from './functional';
-import { checkMimeTypes } from './mime-type';
-import { uuid } from './tools';
-import { getMD5 } from './md5';
-import { LRUCache } from './lru-cache';
-import { CommonError, isCommonError } from './error';
-
-export {
-  // functional
-  compose,
-  composePromise,
-  // mime-type
-  checkMimeTypes,
-  // tools
-  uuid,
-  // md5
-  getMD5,
-  // cache
-  LRUCache,
-  // error
-  CommonError,
-  isCommonError
-};
+export { compose, composePromise } from './functional';
+export { checkMimeTypes } from './mime-type';
+export { uuid } from './tools';
+export { getMD5 } from './md5';
+export { LRUCache } from './lru-cache';
+export { CommonError, isCommonError } from './error';
 
