@@ -1,5 +1,4 @@
-import { IMiddleWare } from '@vergiss/auf-typing';
-import { IContext } from '../server';
+import { IMiddleWare, IContext } from '@vergiss/auf-typing';
 import { RouterMap, dispatchToRouteHandler } from './router-core';
 
 // enum IHttpMethods {

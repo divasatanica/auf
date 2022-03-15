@@ -17,7 +17,7 @@ const callback = () => {
 const errorHandler = (e: Error) => {
   console.error(serverTag, errorTag, e.message, '\n', e.stack);
 }
-const routerMap = RouterMapFactory('/api');
+const routerMap = RouterMapFactory(/* base= */'/api');
 const fsredirPromise = (path: string) => new Promise<string[]>((resolve, reject) => {
   fs.readdir(path, (err, files) => {
     if (err) {

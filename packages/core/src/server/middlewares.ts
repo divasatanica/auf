@@ -1,5 +1,6 @@
 import { compose } from '@vergiss/auf-helpers';
-import { IContext, IMiddleWare, IMiddlewareAbility } from './interface';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing';
+import { IMiddlewareAbility } from './interface';
 
 class Middlewares {
   public middlewares: Function[];

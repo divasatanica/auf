@@ -1,5 +1,4 @@
-import { IMiddleWare } from '@vergiss/auf-typing';
-import { IContext } from '../server';
+import { IMiddleWare, IContext } from '@vergiss/auf-typing';
 import { makeRouteTree, IRouterTree } from './prefix-tree';
 
 const methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
