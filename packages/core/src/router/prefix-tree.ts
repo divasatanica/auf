@@ -1,3 +1,6 @@
+
+import { CommonError } from '@vergiss/auf-helpers';
+
 const NOT_LEAF_SIGN = Symbol('__not_leaf__');
 const LEAF_SIGN = Symbol('__leaf__');
 const REG_EXP_NODE_SIGN = Symbol('__regexp_leaf__');
@@ -47,7 +50,11 @@ class RouterRegExpLeafNode<T = Function> {
  */
 
 class NTree implements IRouterTree {
-  private root = new NTreeNode('');
+  private root: NTreeNode;
+
+  constructor ({ base }: IRouterTreeOptions) {
+    this.root = new NTreeNode(base || '');
+  }
 
   addToTree(urlPattern: string, handler: any) {
     let p = this.root;
@@ -96,8 +103,11 @@ class NTree implements IRouterTree {
     const regExpNode = this.root.children.filter(isRegExpNode).filter(node => node.exp.test(url));
 
     if (regExpNode.length === 0) {
-      const err = { message: 'Route not defined', statusCode: 404, statusMessage: 'Not found' };
-      throw err;
+      throw new CommonError({
+        message: 'Route not defined',
+        statusCode: 404,
+        statusMessage: 'Not Found'
+      });
     }
 
     // Take the first mathed regular expression as the result,
@@ -110,9 +120,11 @@ class NTree implements IRouterTree {
     };
   }
 
-  getHandlerFromTree(url: string): any{
+  getHandlerFromTree(url: string){
+    const routeBase = this.root.value;
     const [urlWithParams, _] = url.split('?');
-    const urlComponents = urlWithParams.split('/').filter(Boolean);
+    const urlWithParamsAndWithRouteBase = (!!routeBase) ? urlWithParams.split(routeBase).filter(Boolean)[0] : urlWithParams;
+    const urlComponents = urlWithParamsAndWithRouteBase.split('/').filter(Boolean);
     let p = this.root;
     let i = 0;
     let res;
@@ -148,8 +160,11 @@ class NTree implements IRouterTree {
       const leafNode = p.quickMap.get(LEAF_SIGN);
 
       if (leafNode == null) {
-        const err = { message: 'Handler not defined', statusCode: 500, statusMessage: 'Not found' };
-        throw err;
+        throw new CommonError({
+          message: 'Handler not defined',
+          statusCode: 500,
+          statusMessage: 'Handler Not Found'
+        });
       }
 
       res = leafNode.value;
@@ -174,6 +189,10 @@ export interface IRouterTree {
   getHandlerFromTree(url: string): any;
 }
 
-export function makeRouteTree () {
-  return new NTree();
+export function makeRouteTree (options: IRouterTreeOptions) {
+  return new NTree(options);
+}
+
+export interface IRouterTreeOptions {
+  base?: string;
 }

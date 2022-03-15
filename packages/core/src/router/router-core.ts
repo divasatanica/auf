@@ -11,9 +11,10 @@ type RouteHandlerType = (ctx: IContext, next?: RouteHandlerType | IMiddleWare) =
 class RouterMap {
   public routerMap: Map<string, IRouterTree> = new Map();
 
-  constructor () {
+  constructor (base?: string) {
+    const routerBase = base || '';
     methods.forEach(method => {
-      this.routerMap.set(method, makeRouteTree());
+      this.routerMap.set(method, makeRouteTree({ base: routerBase }));
     });
   }
 

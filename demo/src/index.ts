@@ -17,7 +17,7 @@ const callback = () => {
 const errorHandler = (e: Error) => {
   console.error(serverTag, errorTag, e.message, '\n', e.stack);
 }
-const routerMap = RouterMapFactory();
+const routerMap = RouterMapFactory('/api');
 const fsredirPromise = (path: string) => new Promise<string[]>((resolve, reject) => {
   fs.readdir(path, (err, files) => {
     if (err) {
@@ -38,8 +38,6 @@ routerMap.get('/', async (ctx, next) => {
 });
 
 routerMap.get('/upload/config', async (ctx, next) => {
-  throw new Error('aMessage handler tested!');
-  console.log('*********8', Config);
   ctx.body = JSON.stringify(Object.assign({}, { chunkSize: Config.chunkSize }))
   // @ts-ignore
   next && await next(ctx);

@@ -13,12 +13,12 @@ import { RouterMap, dispatchToRouteHandler } from './router-core';
 
 let routerMap: RouterMap;
 
-function RouterMapFactory () {
+function RouterMapFactory (base: string = '') {
   if (routerMap) {
     return routerMap;
   }
 
-  routerMap = new RouterMap();
+  routerMap = new RouterMap(base);
   return routerMap;
 }
 
