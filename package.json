@@ -6,7 +6,7 @@
     "rimraf": "^3.0.2"
   },
   "scripts": {
-    "dev:setup-server": "node demo/index.js",
+    "dev:setup-server": "cd demo && npm run start",
     "dev:compile": "lerna run --parallel dev"
   }
 }
