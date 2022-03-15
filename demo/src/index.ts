@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Server, Middlewares, Router, RouterMapFactory } from '../../packages/auf';
+import { Server, Middlewares, Router, RouterMapFactory, CommonError } from '../../packages/auf';
 
 const Config = {
   chunkSize: 5 * 1024 * 1024,
@@ -21,7 +21,11 @@ const routerMap = RouterMapFactory(/* base= */'/api');
 const fsredirPromise = (path: string) => new Promise<string[]>((resolve, reject) => {
   fs.readdir(path, (err, files) => {
     if (err) {
-      reject(err);
+      reject(new CommonError({
+        message: err.message,
+        statusCode: 500,
+        statusMessage: 'File not exists'
+      }));
     }
     resolve(files);
   });
