@@ -3,7 +3,9 @@ export {
   ClusterServer,
   Router,
   RouterMapFactory,
-  IClusterServerOptions
+  IClusterServerOptions,
+  CommonError,
+  isCommonError
 } from '@vergiss/auf-core';
 
 export * as Middlewares from '@vergiss/auf-middlewares';
