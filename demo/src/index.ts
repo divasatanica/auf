@@ -135,7 +135,8 @@ const CORS = function () {
 server.applyMiddleware([
   CORS(),
   Middlewares.ErrorBoundary({
-    errorHandler
+    errorHandler,
+    renderError: true
   }),
   Middlewares.Timeout({ timeout }),
   Middlewares.Logger(console),
