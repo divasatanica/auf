@@ -1,46 +1,20 @@
 
 import { CommonError } from '@vergiss/auf-helpers';
+import {
+  NTreeNode,
+  RouterRegExpLeafNode,
+  RouterTreeLeafNode,
+  isLeafNode,
+  isRegExpNode,
+  LEAF_SIGN
+} from './nodes';
+import {
+  IRouterTreeOptions,
+  IRouterTree
+} from './interface';
 
-const NOT_LEAF_SIGN = Symbol('__not_leaf__');
-const LEAF_SIGN = Symbol('__leaf__');
-const REG_EXP_NODE_SIGN = Symbol('__regexp_leaf__');
-
-function isLeafNode (node: any): node is RouterTreeLeafNode {
-  return node.type === LEAF_SIGN;
-}
-
-function isRegExpNode (node: any): node is RouterRegExpLeafNode {
-  return node.type === REG_EXP_NODE_SIGN;
-}
-
-class NTreeNode {
-  public value: string;
-  public children: Array<NTreeNode | RouterTreeLeafNode | RouterRegExpLeafNode>;
-  public quickMap: Map<string|Symbol, NTreeNode | RouterTreeLeafNode> = new Map();
-  public type: Symbol = NOT_LEAF_SIGN;
-  public paramNode: NTreeNode;
-  constructor (value: string) {
-    this.value = value;
-    this.children = [];
-  }
-}
-
-class RouterTreeLeafNode<T = Function> {
-  public value: T;
-  public type: Symbol = LEAF_SIGN;
-  constructor (value: T) {
-    this.value = value;
-  }
-}
-
-class RouterRegExpLeafNode<T = Function> {
-  public value: T;
-  public exp: RegExp;
-  public type: Symbol = REG_EXP_NODE_SIGN;
-  constructor (exp: RegExp, value: T) {
-    this.exp = exp;
-    this.value = value;
-  }
+export {
+  IRouterTree
 }
 
 /**
@@ -49,14 +23,14 @@ class RouterRegExpLeafNode<T = Function> {
  *  can make a convenient access to match the route and get the handler. 
  */
 
-class NTree implements IRouterTree {
-  private root: NTreeNode;
+class NTree<T> implements IRouterTree<T> {
+  private root: NTreeNode<T>;
 
   constructor ({ base }: IRouterTreeOptions) {
     this.root = new NTreeNode(base || '');
   }
 
-  addToTree(urlPattern: string, handler: any) {
+  addToTree(urlPattern: string, handler: T) {
     let p = this.root;
     // Padding an element to the rear of the array to make the leaf node.
     const urlPatternComponents = [...urlPattern.split('/').filter(Boolean), LEAF_SIGN];
@@ -69,7 +43,7 @@ class NTree implements IRouterTree {
       // node, just return cause it means redundant route is adding to the tree, we dont need it.
       if (p.quickMap.has(component as string)) {
         const node = p.quickMap.get(component as string)!;
-        if (isLeafNode(node)) {
+        if (isLeafNode<T>(node)) {
           return;
         }
         p = node;
@@ -77,12 +51,12 @@ class NTree implements IRouterTree {
       }
 
       if (component === LEAF_SIGN) {
-        const newNode = new RouterTreeLeafNode(handler);
+        const newNode = new RouterTreeLeafNode<T>(handler);
         quickMap.set(LEAF_SIGN, newNode);
         return;
       }
 
-      const newNode = new NTreeNode(component as string);
+      const newNode = new NTreeNode<T>(component as string);
       p.quickMap.set(component as string, newNode);
       // When the expression like ':id' shows in the route, it should
       // be treated as a parameter node.One tree node can only have one parameter node.
@@ -93,16 +67,17 @@ class NTree implements IRouterTree {
     });
   }
 
-  addRegExpToTree(urlPattern: RegExp, handler: Function) {
+  addRegExpToTree(urlPattern: RegExp, handler: T) {
     const root = this.root;
 
-    root.children.push(new RouterRegExpLeafNode(urlPattern, handler));
+    root.children.push(new RouterRegExpLeafNode<T>(urlPattern, handler));
   }
 
-  getHandlerFromRegExpNode(url: string): any {
-    const regExpNode = this.root.children.filter(isRegExpNode).filter(node => node.exp.test(url));
+  getHandlerFromRegExpNode(url: string) {
+    const regExpNodes = this.root.children.filter(node => isRegExpNode<T>(node)) as RouterRegExpLeafNode<T>[];
+    const matchedRegExpNodes = regExpNodes.filter(node => node.exp.test(url));
 
-    if (regExpNode.length === 0) {
+    if (matchedRegExpNodes.length === 0) {
       throw new CommonError({
         message: 'Route not defined',
         statusCode: 404,
@@ -112,7 +87,7 @@ class NTree implements IRouterTree {
 
     // Take the first mathed regular expression as the result,
     // No considering the case for multi regexp matched.
-    const node = regExpNode[0];
+    const node = matchedRegExpNodes[0];
 
     return {
       handler: node.value,
@@ -120,15 +95,15 @@ class NTree implements IRouterTree {
     };
   }
 
-  getHandlerFromTree(url: string){
+  getHandlerFromTree(url: string): { handler: T, path: string | RegExp } {
     const routeBase = this.root.value;
     const [urlWithParams, _] = url.split('?');
     const urlWithParamsAndWithRouteBase = (!!routeBase) ? urlWithParams.split(routeBase).filter(Boolean)[0] : urlWithParams;
     const urlComponents = urlWithParamsAndWithRouteBase.split('/').filter(Boolean);
     let p = this.root;
     let i = 0;
-    let res;
-    let path = '';
+    let res: T;
+    let path = '' as (string | RegExp);
     while (p) {
       const component = urlComponents[i ++];
 
@@ -136,7 +111,7 @@ class NTree implements IRouterTree {
       // Or just move to the next level and store the path.
       if (p.quickMap.has(component)) {
         const node = p.quickMap.get(component)!;
-        if (isLeafNode(node)) {
+        if (isLeafNode<T>(node)) {
           res = node.value;
           break;
         }
@@ -148,9 +123,10 @@ class NTree implements IRouterTree {
         // If no parameter node found, try regular expression matching.
         if (!p.paramNode) {
           const { handler, matched } = this.getHandlerFromRegExpNode(url);
-          res = handler
-          path = matched;
-          break;
+          return {
+            handler,
+            path: matched
+          };
         }
         path += '/' + p.paramNode.value;
         p = p.paramNode;
@@ -167,11 +143,12 @@ class NTree implements IRouterTree {
         });
       }
 
-      res = leafNode.value;
+      res = (leafNode as RouterTreeLeafNode<T>).value;
       break;
     }
 
     return {
+      // @ts-ignore
       handler: res,
       path
     };
@@ -182,17 +159,6 @@ class NTree implements IRouterTree {
   }
 }
 
-export interface IRouterTree {
-  addToTree(urlPattern: string, handler: any): void;
-  addRegExpToTree(urlPattern: RegExp, handler: any): void;
-  getRoot(): NTreeNode;
-  getHandlerFromTree(url: string): any;
-}
-
-export function makeRouteTree (options: IRouterTreeOptions) {
-  return new NTree(options);
-}
-
-export interface IRouterTreeOptions {
-  base?: string;
+export function makeRouteTree<T> (options: IRouterTreeOptions) {
+  return new NTree<T>(options);
 }

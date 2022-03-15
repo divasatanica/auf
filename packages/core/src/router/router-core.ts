@@ -6,15 +6,15 @@ const methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
 
 type IHTTPMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
 
-type RouteHandlerType = (ctx: IContext, next?: RouteHandlerType | IMiddleWare) => void;
+type RouteHandlerType = (ctx: IContext, next?: RouteHandlerType | IMiddleWare) => Promise<any>;
 
 class RouterMap {
-  public routerMap: Map<string, IRouterTree> = new Map();
+  public routerMap: Map<string, IRouterTree<RouteHandlerType>> = new Map();
 
   constructor (base?: string) {
     const routerBase = base || '';
     methods.forEach(method => {
-      this.routerMap.set(method, makeRouteTree({ base: routerBase }));
+      this.routerMap.set(method, makeRouteTree<RouteHandlerType>({ base: routerBase }));
     });
   }
 
@@ -119,7 +119,7 @@ function wrapCtxWithQuery(ctx: IContext, url: string) {
   ctx.extendInfo.query = query;
 }
 
-async function dispatchToRouteHandler(ctx: IContext, routerTree: IRouterTree) {
+async function dispatchToRouteHandler(ctx: IContext, routerTree: IRouterTree<RouteHandlerType>) {
   const { url } = ctx.req;
   const { handler, path } = routerTree.getHandlerFromTree(url!);
 
