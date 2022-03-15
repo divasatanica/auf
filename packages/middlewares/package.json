@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
-    "@types/node": "^15.12.1",
+    "@types/node": "^15.6.2",
     "@vergiss/auf-typing": "^1.0.1",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
