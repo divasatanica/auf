@@ -1,6 +1,7 @@
 import { cpus } from 'os';
 import * as cluster from 'cluster';
-import { IClusterServerOptions, IMiddlewareAbility, IMiddleWare, IContext } from './interface';
+import { IContext, IMiddleWare } from '@vergiss/auf-typing';
+import { IClusterServerOptions, IMiddlewareAbility } from './interface';
 import { BaseServer } from './base-server';
 import { MiddlewaresAbility } from './middlewares';
 

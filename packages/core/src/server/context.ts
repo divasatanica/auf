@@ -1,5 +1,5 @@
 import * as http from 'http';
-import { IServerOptions, IContext } from './interface';
+import { IContext, IServerOptions } from '@vergiss/auf-typing';
 
 class Context implements IContext {
   public res: http.ServerResponse;

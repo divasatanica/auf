@@ -1,6 +1,4 @@
 import {
-  IContext,
-  IServerOptions,
   IClusterServerOptions
 } from './interface';
 
@@ -13,8 +11,6 @@ import {
 } from './cluster-server';
 
 export {
-  IContext,
-  IServerOptions,
   IClusterServerOptions,
 
   Server,

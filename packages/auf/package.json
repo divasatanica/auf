@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "@vergiss/auf-core": "^0.3.1",
-    "@vergiss/auf-middlewares": "^0.3.1"
+    "@vergiss/auf-middlewares": "^0.3.1",
+    "@vergiss/auf-typing": "^1.0.1"
   },
   "devDependencies": {
     "rimraf": "^3.0.2",

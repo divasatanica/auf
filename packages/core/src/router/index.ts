@@ -1,6 +1,5 @@
-import { IMiddleWare } from '@vergiss/auf-typing';
-import { IContext } from '../server';
-import { RouterMap, dispatchToRouteHandler } from './router-core';
+import { IMiddleWare, IContext } from '@vergiss/auf-typing';
+import { RouterMap, dispatchToRouteHandler, IHTTPMethods } from './router-core';
 
 // enum IHttpMethods {
 //   GET = 'GET',
@@ -13,12 +12,12 @@ import { RouterMap, dispatchToRouteHandler } from './router-core';
 
 let routerMap: RouterMap;
 
-function RouterMapFactory () {
+function RouterMapFactory (base: string = '') {
   if (routerMap) {
     return routerMap;
   }
 
-  routerMap = new RouterMap();
+  routerMap = new RouterMap(base);
   return routerMap;
 }
 
@@ -32,7 +31,13 @@ function Router(): IMiddleWare {
     }
 
     const { method } = ctx.req;
-    const { handler, ctx: wrappedCtx } = await dispatchToRouteHandler(ctx, routerMap.getFromMap(method!)!);
+
+    const { handler, ctx: wrappedCtx } = await dispatchToRouteHandler(ctx, routerMap.getFromMap(method! as IHTTPMethods)!);
+
+    if (!handler) {
+      await next(ctx);
+      return;
+    }
 
     await handler(wrappedCtx, next);
   }

@@ -1,5 +1,4 @@
 import { IContext, IServerOptions, IMiddleWare  } from '@vergiss/auf-typing';
-export { IContext, IServerOptions, IMiddleWare }
 
 export interface IServer {
   setup(listeningCallback?: () => void): void;

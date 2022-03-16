@@ -1,17 +1,7 @@
-import { StaticRoutes } from './static-routes';
-import { Logger } from './logger';
-import { Timeout } from './timeout';
-import { CacheControl } from './cache-control';
-import { ErrorBoundary } from './error-boundary';
-import { AuthControl } from './auth-control';
-import { BodyParser } from './body-parser';
-
-export {
-  StaticRoutes,
-  Logger,
-  Timeout,
-  CacheControl,
-  ErrorBoundary,
-  AuthControl,
-  BodyParser
-}
+export { StaticRoutes } from './static-routes';
+export { Logger } from './logger';
+export { Timeout } from './timeout';
+export { CacheControl } from './cache-control';
+export { ErrorBoundary } from './error-boundary';
+export { AuthControl } from './auth-control';
+export { BodyParser } from './body-parser';

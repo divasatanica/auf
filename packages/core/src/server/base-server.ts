@@ -1,7 +1,7 @@
 import * as http from 'http';
-import { IServerOptions, IBaseServer } from './interface';
+import { IContext, IServerOptions } from '@vergiss/auf-typing';
+import { IBaseServer } from './interface';
 import { Context } from './context';
-import { IContext } from '.';
 
 class BaseServer implements IBaseServer {
   public options: IServerOptions;
