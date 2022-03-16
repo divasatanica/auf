@@ -1,6 +1,6 @@
 {
   "name": "@vergiss/auf",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "> TODO: description",
   "author": "divasatanica <coma.desperado@gmail.com>",
   "homepage": "https://github.com/divasatanica/auf#readme",
@@ -29,9 +29,9 @@
     "url": "https://github.com/divasatanica/auf/issues"
   },
   "dependencies": {
-    "@vergiss/auf-core": "^0.3.1",
-    "@vergiss/auf-middlewares": "^0.3.1",
-    "@vergiss/auf-typing": "^1.0.1"
+    "@vergiss/auf-core": "^0.4.0",
+    "@vergiss/auf-middlewares": "^0.4.0",
+    "@vergiss/auf-typing": "^1.0.2"
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
