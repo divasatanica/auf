@@ -1,5 +1,6 @@
+import { IContext, IMiddleWare, IServerOptions } from '@vergiss/auf-typing';
 import { MiddlewaresAbility } from './middlewares';
-import { IServerOptions, IContext, IServer, IMiddleWare, IMiddlewareAbility } from './interface';
+import { IServer, IMiddlewareAbility } from './interface';
 import { BaseServer } from './base-server';
 
 class Server extends BaseServer implements IServer, IMiddlewareAbility {

@@ -42,6 +42,7 @@ It define an error boundary which can handle the exception. Pass an error handle
 ```js
 {
   errorHandler?: (err: Error) => void; // Default: console.error
+  renderError? (ctx: IContext) => boolean | boolean;
 }
 ```
 
@@ -77,3 +78,7 @@ It handles the timeout case in the handler, which accept custom timeout deadline
   timeout: number; // Default: 15000(ms)
 }
 ```
+
+### 7. BodyParser Middleware
+
+It parses the http body with content-type `application/x-www-urlencoded` or `multipart/form-data`.

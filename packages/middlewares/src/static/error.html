@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    #header {
+      padding: 10px;
+    }
+
+    #stack {
+      margin-top: 20px;
+      padding: 8px;
+      background: #eee;
+      border-radius: 5px;
+    }
+
+    #footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <% <h1>{{ this.statusCode }} {{ this.statusMessage }}</h1> %>
+    <% <pre id="stack">{{ this.stack }}</pre> %>
+  </header>
+  <footer id="footer">
+    <hr />
+    <span>Powered by auf.</span>
+  </footer>
+</body>
+</html>
