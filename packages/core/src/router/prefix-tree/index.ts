@@ -95,16 +95,15 @@ class NTree<T> implements IRouterTree<T> {
     };
   }
 
-  getHandlerFromTree(url: string): { handler: T, path: string | RegExp } {
+  getHandlerFromTree(url: string): { handler: T | null, path: string | RegExp } {
     const routeBase = this.root.value;
     const [urlWithParams, _] = url.split('?');
 
     if ((!!routeBase) && urlWithParams.indexOf(routeBase) < 0) {
-      throw new CommonError({
-        message: 'You are accessing a url without the base path configured, check the options',
-        statusCode: 404,
-        statusMessage: 'Not Found'
-      });
+      return {
+        handler: null,
+        path: ''
+      }
     }
     const urlWithParamsAndWithRouteBase = (!!routeBase) ? urlWithParams.split(routeBase).filter(Boolean)[0] : urlWithParams;
     const urlComponents = urlWithParamsAndWithRouteBase.split('/').filter(Boolean);
