@@ -33,7 +33,7 @@ const fsredirPromise = (path: string) => new Promise<string[]>((resolve, reject)
 
 const server = new Server({
   port,
-  assetsRoot: path.resolve(__dirname, '../public')
+  assetsRoot: Config.publicDir
 });
 
 routerMap.get('/', async (ctx, next) => {
@@ -44,6 +44,11 @@ routerMap.get('/', async (ctx, next) => {
 routerMap.get('/upload/config', async (ctx, next) => {
   ctx.body = JSON.stringify(Object.assign({}, { chunkSize: Config.chunkSize }))
   // @ts-ignore
+  next && await next(ctx);
+});
+
+routerMap.head('/upload/config', async (ctx, next) => {
+  ctx.body = JSON.stringify(Object.assign({}, { chunkSize: Config.chunkSize }));
   next && await next(ctx);
 });
 
@@ -144,6 +149,9 @@ server.applyMiddleware([
   }),
   Middlewares.Timeout({ timeout }),
   Middlewares.Logger(console),
+  Middlewares.StaticRoutes({
+    fileSystem: fs
+  }),
   Middlewares.BodyParser(),
   Router()
 ])

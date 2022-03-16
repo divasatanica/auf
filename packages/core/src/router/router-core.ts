@@ -1,14 +1,14 @@
 import { IMiddleWare, IContext } from '@vergiss/auf-typing';
 import { makeRouteTree, IRouterTree } from './prefix-tree';
 
-const methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'];
+const methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'] as IHTTPMethods[];
 
-type IHTTPMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
+export type IHTTPMethods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS' | 'HEAD';
 
 type RouteHandlerType = (ctx: IContext, next?: RouteHandlerType | IMiddleWare) => Promise<any>;
-
+type URLPatternType = string | RegExp;
 class RouterMap {
-  public routerMap: Map<string, IRouterTree<RouteHandlerType>> = new Map();
+  public routerMap: Map<IHTTPMethods, IRouterTree<RouteHandlerType>> = new Map();
 
   constructor (base?: string) {
     const routerBase = base || '';
@@ -31,32 +31,54 @@ class RouterMap {
     }
   }
 
-  getFromMap(method: string) {
+  getFromMap(method: IHTTPMethods) {
     return this.routerMap.get(method);
   }
 
-  get(urlPattern: string, handler: RouteHandlerType) {
+  all(pattern: URLPatternType, handler: RouteHandlerType) {
+    methods.forEach(method => {
+      this.register(method, pattern, handler);
+    });
+  }
+
+  get(urlPattern: URLPatternType, handler: RouteHandlerType) {
     return this.register('GET', urlPattern, handler);
   }
 
-  post(urlPattern: string, handler: RouteHandlerType) {
+  post(urlPattern: URLPatternType, handler: RouteHandlerType) {
     return this.register('POST', urlPattern, handler);
   }
 
-  delete(urlPattern: string, handler: RouteHandlerType) {
+  delete(urlPattern: URLPatternType, handler: RouteHandlerType) {
     return this.register('DELETE', urlPattern, handler);
   }
 
-  put(urlPattern: string, handler: RouteHandlerType) {
+  put(urlPattern: URLPatternType, handler: RouteHandlerType) {
     return this.register('PUT', urlPattern, handler);
   }
 
-  patch(urlPattern: string, handler: RouteHandlerType) {
+  patch(urlPattern: URLPatternType, handler: RouteHandlerType) {
     return this.register('PATCH', urlPattern, handler);
   }
 
-  options(urlPattern: string, handler: RouteHandlerType) {
+  options(urlPattern: URLPatternType, handler: RouteHandlerType) {
     return this.register('OPTIONS', urlPattern, handler);
+  }
+
+  head(urlPattern: URLPatternType, handler: RouteHandlerType) {
+    const headHandler: RouteHandlerType = async (ctx, next) => {
+      await handler(ctx, next);
+
+      if (ctx.body) {
+        if (typeof ctx.body === 'object' || typeof ctx.body === 'string') {
+          const contentLengthOffset = 2;
+          ctx.res.setHeader('content-length', JSON.stringify(ctx.body).length - contentLengthOffset);
+          ctx.body = '';
+          ctx.extendInfo.handled = true;
+        }
+      }
+    }
+    return this.register('HEAD', urlPattern, headHandler);
   }
 }
 
@@ -70,7 +92,7 @@ class RouterMap {
 function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp) {
   ctx.extendInfo = ctx.extendInfo || {};
   wrapCtxWithQuery(ctx, url);
-  const [urlWithParams] = url.split('?');
+  const { pathname: urlWithParams } = new URL(url, 'https://auf.dev' /* it's just a fake domain for parse relative path */);
   let params = Object.create(null);
 
   if (typeof urlPattern !== 'string') {
@@ -103,7 +125,7 @@ function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp) {
 }
 
 function wrapCtxWithQuery(ctx: IContext, url: string) {
-  const [_, queryString = ''] = url.split('?');
+  const { search: queryString } = new URL(url, 'https://auf.dev' /* it's just a fake domain for parse relative path */);
   const query = queryString.split('&').reduce((acc, curr) => {
     if (!curr) {
       return acc;

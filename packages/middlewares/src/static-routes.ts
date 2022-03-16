@@ -8,7 +8,7 @@ export function StaticRoutes(options): IMiddleWare {
   return async function StaticRoutesMiddleware(ctx: IContext, next: IMiddleWare ) {
     const { template = fs.readFileSync(path.resolve(__dirname, './static/template.html')).toString('utf-8'), fileSystem = fs } = options;
     const { req, serverOptions } = ctx;
-    const { url } = req;
+    const { url, method } = req;
     const { assetsRoot } = serverOptions;
 
     if (!assetsRoot || typeof assetsRoot !== 'string') {
@@ -17,7 +17,14 @@ export function StaticRoutes(options): IMiddleWare {
   
     const resourcePath = assetsRoot + (global.decodeURIComponent(url!) || '');
     try {
-      const stat = fileSystem.lstatSync(resourcePath);
+      const stat = (fileSystem as typeof fs).lstatSync(resourcePath);
+      if (method?.toLowerCase() === 'head') {
+        ctx.res.setHeader('content-length', stat.size);
+        ctx.body = '';
+        ctx.extendInfo.handled = true;
+        await next(ctx);
+        return;
+      }
       if (stat.isDirectory()) {
         const dirs = fileSystem.readdirSync(resourcePath, {
           withFileTypes: true
@@ -46,7 +53,7 @@ export function StaticRoutes(options): IMiddleWare {
       }
   
       if (!stat.isFile()) {
-        throw new Error();
+        throw new Error('Not found');
       }
     } catch (e) {
       await next(ctx);
