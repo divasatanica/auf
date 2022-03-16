@@ -126,14 +126,14 @@ function wrapCtx (ctx: IContext, url: string, urlPattern: string | RegExp) {
 
 function wrapCtxWithQuery(ctx: IContext, url: string) {
   const { search: queryString } = new URL(url, 'https://auf.dev' /* it's just a fake domain for parse relative path */);
-  const query = queryString.split('&').reduce((acc, curr) => {
+  const query = queryString.replace('?', '').split('&').reduce((acc, curr) => {
     if (!curr) {
       return acc;
     }
     const [key, value] = curr.split('=');
     return {
       ...acc,
-      [key]: value
+      [decodeURIComponent(key)]: decodeURIComponent(value)
     }
   }, Object.create(null));
 
