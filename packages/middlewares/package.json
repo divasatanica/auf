@@ -38,5 +38,8 @@
     "@vergiss/auf-helpers": "^0.3.0",
     "@vergiss/auf-template-engine": "^0.4.0"
   },
-  "gitHead": "3f74b38e9dc2a875da3de1a32d4c045acb975d7b"
+  "gitHead": "3f74b38e9dc2a875da3de1a32d4c045acb975d7b",
+  "resolutions": {
+    "@types/node": "15.6.2"
+  }
 }

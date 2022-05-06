@@ -37,5 +37,8 @@
     "ts-node": "^10.7.0",
     "typescript": "^4.3.2"
   },
-  "gitHead": "3f74b38e9dc2a875da3de1a32d4c045acb975d7b"
+  "gitHead": "3f74b38e9dc2a875da3de1a32d4c045acb975d7b",
+  "resolutions": {
+    "@types/node": "15.6.2"
+  }
 }

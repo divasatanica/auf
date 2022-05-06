@@ -1,18 +1,21 @@
 import * as http from 'http';
-import { IContext, IServerOptions } from '@vergiss/auf-typing';
+import { IContext, IServerOptions, ContextExtendInfoType } from '@vergiss/auf-typing';
 
 class Context implements IContext {
   public res: http.ServerResponse;
   public req: http.IncomingMessage;
   public serverOptions: IServerOptions;
-  public extendInfo: any;
+  public extendInfo: ContextExtendInfoType;
   private _body: any;
   constructor (req: http.IncomingMessage, res: http.ServerResponse, serverOptions: IServerOptions) {
     this.res = res;
     this.req = req;
     this.serverOptions = serverOptions;
     this._body = {} as any;
-    this.extendInfo = {} as any;
+    this.extendInfo = {
+      visMap: new WeakSet(),
+      handled: false
+    };
   }
 
   get body() {

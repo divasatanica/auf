@@ -13,10 +13,10 @@ class BaseServer implements IBaseServer {
     const { port } = this.options;
     http.createServer(async (_, res) => {
       const ctx = new Context(_, res, this.options);
-      if (handleContext) {
-        await handleContext(ctx);
-      }
       try {
+        if (handleContext) {
+          await handleContext(ctx);
+        }
         if (ctx.body == null) {
           res.end('');
           return;
