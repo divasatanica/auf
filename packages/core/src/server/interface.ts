@@ -16,6 +16,6 @@ export interface IClusterServerOptions extends IServerOptions {
 }
 
 export interface IMiddlewareAbility {
-  next(ctx: IContext): Promise<unknown>;
+  next(ctx: IContext): void;
   applyMiddleware(middlewares: IMiddleWare[]): void 
 }

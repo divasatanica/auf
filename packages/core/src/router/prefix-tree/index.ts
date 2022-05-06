@@ -1,5 +1,5 @@
 
-import { CommonError } from '@vergiss/auf-helpers';
+import { throwCommonError } from '@vergiss/auf-helpers';
 import {
   NTreeNode,
   RouterRegExpLeafNode,
@@ -78,7 +78,7 @@ class NTree<T> implements IRouterTree<T> {
     const matchedRegExpNodes = regExpNodes.filter(node => node.exp.test(url));
 
     if (matchedRegExpNodes.length === 0) {
-      throw new CommonError({
+      throwCommonError({
         message: 'Route not defined',
         statusCode: 404,
         statusMessage: 'Not Found'
@@ -143,11 +143,11 @@ class NTree<T> implements IRouterTree<T> {
       const leafNode = p.quickMap.get(LEAF_SIGN);
 
       if (leafNode == null) {
-        throw new CommonError({
+        throwCommonError({
           message: 'Handler not defined',
           statusCode: 500,
           statusMessage: 'Handler Not Found'
-        });
+        })
       }
 
       res = (leafNode as RouterTreeLeafNode<T>).value;

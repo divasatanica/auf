@@ -36,8 +36,9 @@ const server = new Server({
   assetsRoot: Config.publicDir
 });
 
-routerMap.get('/', async (ctx, next) => {
-  ctx.body = '';
+routerMap.get('/test-multi', async (ctx, next) => {
+  ctx.body = 'hi~';
+  next && await next(ctx);
   next && await next(ctx);
 });
 

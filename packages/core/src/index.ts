@@ -1,13 +1,4 @@
-import { ClusterServer, Server, IClusterServerOptions } from './server';
-import { Router, RouterMapFactory } from './router';
+export { ClusterServer, Server, IClusterServerOptions } from './server';
+export { Router, RouterMapFactory } from './router';
 
-export { CommonError, isCommonError } from '@vergiss/auf-helpers';
-export {
-  Server,
-  ClusterServer,
-  Router,
-  RouterMapFactory,
-
-  // declarations
-  IClusterServerOptions,
-}
+export { CommonError, isCommonError, throwCommonError } from '@vergiss/auf-helpers';

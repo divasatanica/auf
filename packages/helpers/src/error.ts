@@ -17,10 +17,15 @@ class CommonError extends Error {
   }
 }
 
+function throwCommonError(options: ICommonErrorOptions): never {
+  throw new CommonError(options);
+}
+
 function isCommonError (value: any): value is CommonError {
   return value.type === commonErrorSymbol;
 }
 export {
   CommonError,
-  isCommonError
+  isCommonError,
+  throwCommonError
 }
